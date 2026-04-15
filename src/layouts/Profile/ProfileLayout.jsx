@@ -13,6 +13,7 @@ import DeleteAccount from "../../components/DeleteAccount/DeleteAccount";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LockIcon from "@mui/icons-material/Lock";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 import styles from "./styles.module.scss";
 
@@ -36,8 +37,7 @@ const ProfileLayout = () => {
         <Navbar />
         <div className={styles.Configuration__BackLink}>
           <Link to="/">
-            <img src="../src/assets/icons/backArrow.svg" alt="Voltar" />
-            Voltar
+            <ArrowBackIcon /> Voltar
           </Link>
         </div>
 
