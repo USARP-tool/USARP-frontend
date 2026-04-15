@@ -1,0 +1,53 @@
+header {
+
+  h2 {
+    font-size: 1.5rem;
+    color: var(--primary-900);
+  }
+
+  div {
+    width: 300px;
+    display: flex;
+    justify-self: end;
+    margin-top: -16px;
+  }
+}
+
+.filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 30px 0px;
+}
+
+.filterGroup {
+  display: flex;
+  gap: 16px;
+}
+
+.filterButton {
+  padding: 8px 24px;
+  border-radius: 100px;
+  border: 1px solid var(--gray-200);
+  background-color: var(--white);
+  color: var(--primary-900);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+
+  &:hover {
+    background-color: var(--gray-50);
+  }
+
+  &.active {
+    background-color: var(--primary-100);
+    border-color: var(--primary-200);
+    color: var(--primary-900);
+  }
+}
+
+.newProject {
+  width: 300px !important;
+}

@@ -1,0 +1,21 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  border-bottom: 1px dashed var(--gray-100);
+  padding-bottom: 0.5rem;
+
+  .label {
+    font-family: var(--font-inter);
+    color: var(--gray-500);
+    font-weight: 500;
+  }
+
+  .value {
+    font-family: var(--font-inter);
+    color: var(--primary-900);
+    font-weight: 500;
+    text-align: right;
+  }
+}

@@ -1,0 +1,24 @@
+.sidebarLink {
+  text-decoration: none;
+}
+
+.sidebarItem {
+  display: flex;
+  align-items: center;
+  border-radius: 16px;
+  padding: 16px;
+  font-weight: 400;
+  background-color: transparent;
+  color: var(--th-button-sidebar-text-noselected);
+  cursor: pointer;
+
+  &.selected {
+    font-weight: 600;
+    background-color: var(--th-button-sidebar-background);
+    color: var(--th-button-sidebar-text-selected);
+  }
+}
+
+.label {
+  padding-left: 16px;
+}

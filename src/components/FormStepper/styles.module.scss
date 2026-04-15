@@ -1,0 +1,30 @@
+.stepLabel {
+  /* Texto do label ativo */
+  :global(.MuiStepLabel-label.Mui-active) {
+    color: #00adb4;
+    font-size: 1.1rem;
+  }
+
+  /* Texto do label concluído */
+  :global(.MuiStepLabel-label.Mui-completed) {
+    color: #00adb4;
+    font-size: 1.1rem;
+  }
+
+  /* Ícone do step ativo */
+  :global(.MuiStepIcon-root.Mui-active) {
+    color: #00adb4;
+    font-size: 2rem;
+  }
+
+  /* Ícone do step concluído */
+  :global(.MuiStepIcon-root.Mui-completed) {
+    color: #00adb4;
+    font-size: 2rem;
+  }
+
+  /* Ícone do step inativo */
+  :global(.MuiStepIcon-root) {
+    font-size: 1.8rem;
+  }
+}

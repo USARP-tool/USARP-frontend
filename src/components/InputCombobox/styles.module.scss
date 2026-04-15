@@ -1,0 +1,39 @@
+.custom_select {
+  > div:nth-of-type(1) {
+    border-radius: 1rem;
+    // height: 3.5rem;
+    box-shadow: none;
+    &:focus-within {
+      border: none !important;
+      outline: 0.06rem solid var(--th-combobox-focus);
+    }
+  }
+}
+
+.custom_indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 16px 16px 0;
+  
+  svg {
+    fill: var(--gray-700);
+    width: 24px;
+    height: 24px;
+    transition: transform 0.2s ease;
+  }
+}
+
+.indicator_focused {
+  color: var(--th-combobox-focused);
+}
+
+.input__error {
+  color: var(--th-input-error);
+  font-family: Inter;
+  font-size: 0.88rem;
+  font-weight: 400;
+  line-height: 150%;
+  letter-spacing: 0%;
+  text-align: left;
+}

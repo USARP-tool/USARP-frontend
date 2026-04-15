@@ -1,0 +1,25 @@
+.dash {
+  .dash__container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  p {
+    margin-top: 0.5rem;
+    color: var(--gray-colors-800, #424242);
+
+    /* Caption/Regular */
+    font-family: Inter;
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%; /* 1.125rem */
+  }
+  @media(max-width: 600px) {
+    svg {
+      width: 105px;
+    }
+  }
+}

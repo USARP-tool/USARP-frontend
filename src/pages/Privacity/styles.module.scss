@@ -1,0 +1,53 @@
+.container {
+  margin: auto;
+
+  .header {
+    display: flex;
+    align-items: center;
+    margin: 1rem 0;
+
+    .userInfo {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      .userName {
+        color: var(--th-color-text-profile-user-name);
+        font-size: 1.5rem;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  .divider {
+    border: none;
+    border-top: var(--th-border-divider-profile);
+    margin-bottom: 2rem;
+  }
+
+  .formContent {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 100%;
+  }
+
+  .inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .label {
+      color: var(--th-color-text-profile-label-view);
+      font-size: 1rem;
+      font-family: var(--th-font-inter);
+      font-weight: 500;
+    }
+  }
+
+  .actionArea {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

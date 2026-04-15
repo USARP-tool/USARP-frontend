@@ -1,0 +1,45 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  padding: 1.3rem 2rem;
+  font-size: 1rem;
+  gap: 20px;
+  border-radius: 15px;
+  font-weight: 700;
+
+  img {
+    object-fit: contain;
+  }
+
+  &.primary {
+    background-color: var(--primary-100);
+    color: var(--primary-800);
+    border: 1px solid var(--primary-200);
+  }
+
+  &.secondary {
+    background-color: var(--tertiary-100);
+    color: var(--tertiary-800);
+    border: 1px solid var(--tertiary-300);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    filter: grayscale(100%);
+    opacity: 0.6;
+    transform: none;
+    box-shadow: none;
+    background-color: var(--primary-100);
+    border: 1px solid var(--primary-200);
+  }
+
+  &:not(:disabled):hover {
+    filter: brightness(0.95);
+    transform: translateY(-2px);
+  }
+}

@@ -1,0 +1,93 @@
+.brainstormingcard__container {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  min-height: 26.5rem;
+  min-width: 14.25rem;
+  justify-content: space-between;
+  gap: 1rem;
+  box-sizing: border-box;
+
+  border: 1px solid var(--th-brainstormingcard-border);
+  border-radius: 16px;
+
+
+  > span {
+    /* Caption/Regular */
+    color: var(--th-brainstormingcard-textdate);
+    font-family: Inter;
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 150%;
+    text-align: left;
+    margin-top: -1rem;
+  }
+  figure {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    img {
+      width: 10.25rem;
+    }
+  }
+  .brainstormingcard__header {
+    display: flex;
+    justify-content: space-between;
+    h6 {
+      color: var(--th-brainstormingcard-text-title);
+      font-family: Inter;
+      font-size: 0.875rem;
+      font-weight: 600;
+      line-height: 150%;
+      text-align: left;
+    }
+  }
+  .brainstormingcard__project {
+    h6 {
+      color: var(--th-brainstormingcard-text);
+      font-family: Inter;
+      font-size: 0.75rem;
+      font-weight: 600;
+      line-height: 150%;
+      text-align: left;
+      margin-bottom: 1rem;
+    }
+    span {
+      padding: 0.6rem;
+      border-radius: 16px;
+      background: #cb5228;
+      color: #ffffff;
+      font-family: Inter;
+      font-size: 0.75rem;
+      font-weight: 500;
+      line-height: 150%;
+      text-align: center;
+    }
+  }
+  .brainstormingcard__userstory {
+    h6 {
+      color: var(--th-brainstormingcard-text);
+      font-family: Inter;
+      font-size: 0.75rem;
+      font-weight: 600;
+      line-height: 150%;
+      text-align: left;
+      margin-bottom: 1rem;
+    }
+    > div {
+      display: flex;
+      flex-direction: row;
+      span {
+        width: 4rem;
+        height: 2rem;
+        display: flex; 
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+
+        margin: 0px 4px;
+        border-radius: 200px;
+      }
+    }
+  }
+}

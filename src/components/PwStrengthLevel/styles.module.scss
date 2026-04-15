@@ -1,0 +1,13 @@
+.levels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: -20px;
+}
+
+.bar::before {
+  content: "";
+  display: flex;
+  height: 8px;
+  width: 130px;
+
+}

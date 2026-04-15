@@ -1,0 +1,33 @@
+/* Tooltip.css */
+.tooltipinfo__container {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.tooltipinfo__button {
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+}
+
+.tooltip {
+  transform: translateX(-64%) translateY(-40px); /* Centraliza e desloca um pouco para cima */
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+}
+
+.tooltipinfo__button :hover .tooltip {
+  transform: translateX(-50%) translateY(0); /* Volta à posição inicial */
+  opacity: 1;
+}

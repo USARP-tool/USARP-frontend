@@ -1,0 +1,58 @@
+.expansible__container {
+  box-sizing: border-box;
+  /* Gray colors/400 */
+  border: 0.06rem solid rgb(158, 158, 158);
+  border-radius: 1rem;
+
+  /* US Salva */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 1rem;
+  margin: 0;
+  transition: max-height 0.2s ease-in-out;
+  max-height: 4.2rem;
+  margin-bottom: 2.5rem;
+  &.expanded {
+    max-height: 100vh;
+  }
+}
+
+.expansible__body {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  .expansible__detail {
+    cursor: pointer;
+    svg {
+      fill: #212121; /* Gray colors/900 */
+    }
+    span {
+      padding-left: 1.5rem;
+      width: 24px;
+    }
+  }
+  .expansible__close {
+    cursor: pointer;
+    svg {
+      fill: #d32f2f;
+    }
+    &:hover {
+      background-color: #ffe5e8;
+      border-radius: 10px;
+    }
+  }
+}
+.inputTextarea__error {
+  color: var(--th-input-error);
+  font-family: Inter;
+  font-size: 0.88rem;
+  font-weight: 400;
+  line-height: 150%;
+  letter-spacing: 0%;
+  text-align: left;
+}

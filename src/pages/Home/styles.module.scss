@@ -1,0 +1,40 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  h1 {
+    font-size: 1.7rem;
+  }
+
+  span {
+    color: var(--primary-600);
+    text-transform: capitalize;
+  }
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 2rem;
+}
+
+.brainstormingGroup {
+  p {
+    font-size: 1.5rem;
+    font-weight: 800;
+  }
+}
+
+.emptyMessage {
+  margin-top: 4rem;
+  text-align: center;
+  color: var(--primary-600);
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+
+  span {
+    font-size: 1rem !important;
+    font-weight: 800 !important;
+  }
+}

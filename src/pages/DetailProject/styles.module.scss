@@ -1,0 +1,92 @@
+.detailProject {
+  header {
+    padding: 32px;
+    span {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 1rem;
+      svg {
+        fill: var(--gray-800);
+        cursor: pointer;
+      }
+    }
+    h6 {
+      //TODO: Button color
+      /* Headline/H6 */
+      color: var(--gray-900);
+      font-family: Inter;
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 150%;
+      letter-spacing: 0%;
+      text-align: justify;
+    }
+  }
+  main {
+    padding: 32px;
+    display: flex;
+    gap: 24px;
+    justify-content: space-between;
+
+    .card {
+      min-width: 334px;
+      width: 100%;
+      border: 1px solid var(--gray-200);
+      border-radius: 18px;
+      border-bottom: 1px solid var(--gray-200);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      > hr {
+        border: 1px solid var(--gray-200);
+      }
+      .card__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        >h5{
+          font: 600 24px/150% var(--font-inter);
+          color: var(--primary-700);
+        }
+        >div {
+          display: flex;
+          gap: 24px;
+        }
+      }
+      .card__body {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        > div {
+          > h6 {
+            margin-bottom: 12px;
+            font: 400 14px/150% var(--font-inter);
+            color: var(--gray-700);
+          }
+          > p{
+            font: 400 16px/150% var(--font-inter);
+            color: var(--primary-900);
+          }
+
+        }
+        > div > li {
+          list-style: none;
+          >ul{
+            display: flex;
+            flex-direction: column;
+            row-gap: 12px;
+          }
+        }
+      }
+    }
+  }
+}
+.meansurement {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+

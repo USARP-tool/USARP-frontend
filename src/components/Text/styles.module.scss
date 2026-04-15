@@ -1,0 +1,59 @@
+// Definindo um mapa com os tamanhos de fonte que desejamos para cada heading
+$heading-sizes: (
+  'h1': 51px,
+  'h2': 48px,
+  'h3': 40px,
+  'h4': 32px,
+  'h5': 24px,
+  'h6': 20px
+);
+$button-sizes: (
+  'big': 18px,
+  'medium': 16px,
+  'small': 14px
+);
+
+$caption-weight: (
+  'regular': 400,
+  'medium': 500,
+  'semibold': 600
+);
+
+// Definição do mixin
+@mixin text-button-style($font-family, $weight, $size, $line-height, $letter-spacing) {
+  font-family: $font-family;
+  font-weight: $weight;
+  font-size: $size;
+  line-height: $line-height;
+  letter-spacing: $letter-spacing;
+}
+
+.headline {
+  // Itera sobre o mapa, aplicando as configurações
+  @each $heading, $size in $heading-sizes {
+    > #{$heading} {
+      @include text-button-style('Inter', 600, $size, 30px, 0);
+    }
+  }
+}
+.text__button{
+  @each $button, $size in $button-sizes {
+    &[data-type="#{$button}"] {
+      @include text-button-style('Inter', 600, $size, 21px, 0);
+    }
+  }
+}
+.text__body{
+  @each $body, $size in $button-sizes {
+    &[data-type="#{$body}"] {
+      @include text-button-style('Inter', 400, $size, 24px, 0);
+    }
+  }
+}
+.text__caption{
+  @each $caption, $weight in $caption-weight {
+    &[data-type="#{$caption}"] {
+      @include text-button-style('Inter', weight, 12px, 18px, 0);
+    }
+  }
+}

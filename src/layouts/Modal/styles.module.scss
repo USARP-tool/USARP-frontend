@@ -1,0 +1,117 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.container {
+  background-color: var(--th-color-background-modal, #ffffff);
+  border-radius: 24px;
+  padding: 48px 32px;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: var(--th-shadow-dropdownmenu, 0px 4px 24px rgba(0, 0, 0, 0.1));
+  animation: fadeIn 0.3s ease-out;
+  position: relative;
+
+  &.success {
+    .modalIconWrapper {
+      background-color: var(--success, #00adb4);
+      box-shadow: 0 4px 12px rgba(0, 173, 180, 0.2);
+    }
+  }
+
+  &.error {
+    .modalIconWrapper {
+      background-color: var(--error, #d32f2f);
+      box-shadow: 0 4px 12px rgba(211, 47, 47, 0.2);
+    }
+  }
+
+  &.warning {
+    .modalIconWrapper {
+      background-color: var(--tertiary-500, #ffc53f);
+    }
+  }
+}
+
+.modalIconWrapper {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+
+  .modalIcon {
+    color: var(--white, #ffffff);
+    font-size: 48px;
+  }
+}
+
+.title {
+  font-family: var(--font-inter, sans-serif);
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 120%;
+  color: var(--th-color-text-modal-title, var(--primary-800));
+  margin-bottom: 8px;
+}
+
+.text {
+  font-family: var(--font-inter, sans-serif);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+  color: var(--th-color-text-modal-description, var(--gray-700));
+  margin-bottom: 32px;
+  max-width: 280px;
+}
+
+.modalButton {
+  background-color: var(--th-color-background-modal-button-primary, var(--primary-600));
+  color: var(--th-color-text-modal-button-primary, #ffffff);
+  border: none;
+  border-radius: 12px;
+  padding: 12px 32px;
+  font-family: var(--font-inter, sans-serif);
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  min-width: 140px;
+
+  &:hover {
+    background-color: var(--th-button-primary-hover, var(--primary-500));
+  }
+
+  &:focus {
+    outline: 2px solid var(--primary-200);
+    outline-offset: 2px;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

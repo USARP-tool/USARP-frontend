@@ -1,0 +1,74 @@
+.ReactModal__Overlay {
+  .ReactModal__Content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 449px;
+    padding: 32px;
+    text-align: center;
+    border-radius: 24px;
+    box-shadow: var(--th-shadow);
+    background-color: var(--white);
+
+    .ReactModal__Icon {
+      width: 104px;
+      height: 104px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 32px;
+    }
+
+    .ReactModal__Text {
+      margin-bottom: 24px;
+      h6 {
+        font-size: 20px;
+        line-height: 24px;
+        font-weight: 600;
+        color: var(--th-color-text-modal-title);
+      }
+      p {
+        font-size: 16px;
+        line-height: 24px;
+        color: var(--th-color-text-modal-description);
+        margin-top: 12px;
+      }
+      span {
+        color: var(--th-color-text-modal-highlight);
+      }
+    }
+
+    .ReactModal__Buttons {
+      display: flex;
+      justify-content: space-between;
+
+      & > * {
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        margin-top: 12px;
+        border-radius: 16px;
+        border: 1px var(--th-color-border-modal-button) solid;
+        padding: 16px 24px;
+      }
+
+      .ReactModal__Buttons_Secondary {
+        background-color: transparent;
+        color: var(--th-color-text-modal-button);
+
+        &:hover {
+          background-color: var(--th-color-background-modal-button-hover);
+        }
+      }
+  
+      .ReactModal__Buttons_Primary {
+        background-color: var(--th-color-background-modal-button-primary);
+        color: var(--th-color-text-modal-button-primary);
+      }
+    }
+
+    .ReactModal__SingleButton {
+      display: block;
+    }
+  }
+}

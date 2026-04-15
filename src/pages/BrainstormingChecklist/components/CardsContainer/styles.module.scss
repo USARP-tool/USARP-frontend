@@ -1,0 +1,15 @@
+.cardsContainer {
+
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .cardsContainer__content {
+    gap: 3rem;
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+  }
+}

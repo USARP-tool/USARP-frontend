@@ -1,0 +1,29 @@
+.member_item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    div {
+      > h6 {
+        font: 600 16px/150% var(--font-inter);
+        color: var(--gray-900);
+        text-transform: capitalize;
+      }
+      
+      > span {
+        font: 400 14px/150% var(--font-inter);
+        color: var(--gray-800);
+      }
+    }
+  }
+  
+  > span {
+    font: 400 14px/150% var(--font-inter);
+    text-transform: capitalize;
+  }
+}

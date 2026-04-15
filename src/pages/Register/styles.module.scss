@@ -1,0 +1,60 @@
+.container {
+  background: var(--th-color-background);
+  background-image: var(--th-img-background);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+
+  form {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .infoText {
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 150%;
+    text-align: center;
+    color: #757575;
+    span {
+      color: #00adb4;
+    }
+  }
+
+  .inputGrup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .buttonGrup {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .inputGrup {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .dobGender {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .terms {
+    text-align: center;
+    line-height: 20px;
+    color: #757575;
+    font-size: small;
+  }
+}

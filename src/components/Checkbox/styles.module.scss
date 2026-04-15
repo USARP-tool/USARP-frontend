@@ -1,0 +1,49 @@
+.checkbox__container {
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  cursor: pointer;
+  gap: 0.5rem;
+
+
+  input {
+    cursor: pointer;
+    position: absolute;
+    opacity: 0;
+    height: 0;
+    width: 0;
+  }
+
+  .checkmark {
+    width: 20px;
+    height: 20px;
+
+    border-radius: 4px;
+    border: 1px solid var(--gray-400);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: all 0.3s ease;
+
+
+    &.checked {
+      border: none;
+      background-color: var(--primary-600);
+    }
+
+    .checkmark__icon {
+      font-weight: 900;
+      padding-top: 0.05rem;
+      padding-right: 0.05rem;
+      transform: scale(1.1);
+    }
+
+  }
+
+  .checkbox__text {
+    color: var(--primary-600);
+  }
+}

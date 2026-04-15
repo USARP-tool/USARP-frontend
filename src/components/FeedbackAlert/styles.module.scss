@@ -1,0 +1,101 @@
+.feedbackalert__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  border-radius: 24px;
+  padding: 2rem;
+  width: 28rem;
+  background-color: white;
+  @media (max-width: 600px) {
+    width: 24rem;
+  }
+
+  .description {
+    margin-top: -0.75rem;
+    color: var(--th-feedbackalert-description);
+    font-family: Inter;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 150%;
+    text-align: center;
+    width: 22rem;
+    text-align: justify;
+    span {
+      color: var(--primary-600);
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+  }
+  h6 {
+    color: var(--th-feedbackalert-title);
+    font-family: Inter;
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 150%;
+    text-align: center;
+    > span {
+      color: var(--primary-600);
+    }
+  }
+  .feedbackalert__button {
+    height: 56px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 16px 24px;
+
+    margin: 0px 24px;
+    background: transparent;
+    border: 1px solid var(--th-feedbackalert-button);
+    border-radius: 16px;
+
+    color: var(--th-feedbackalert-button);
+    font-family: Inter;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 150%;
+    text-align: center;
+    cursor: pointer;
+    &:hover {
+      background-color: var(--th-feedbackalert-button-hover);
+    }
+  }
+  -webkit-animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1)
+    backwards;
+  animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) backwards;
+}
+@-webkit-keyframes scale-up-center {
+  0% {
+    -webkit-transform: scale(0.5);
+    transform: scale(0.5);
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+@keyframes scale-up-center {
+  0% {
+    transform: scale(0.5);
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.24);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}

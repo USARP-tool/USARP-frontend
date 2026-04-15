@@ -1,0 +1,89 @@
+.ordemUserstory__container { 
+
+    background-color: #008287;
+    height: 100vh; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .ordemUserstory__box {
+        display: flex;
+        flex-wrap: wrap;
+        background-color: white;
+        width: 735px; 
+        border-radius: 16px;
+        padding: 32px;
+        gap: 32px;
+
+        .top{
+            display: flex;
+            width: 671px;
+            height: 63px;
+            gap: 48px;
+
+            .textRootContainer{
+                display: flex;
+                flex-direction: column;
+                width: 591px;
+                height: 63px;
+                gap: 12px;
+                color: #616161;
+
+                h6{
+                    color: #004548;
+                }
+            
+            }
+            .iconeSair{
+                width: 32px;
+                height: 32px;
+
+                button { 
+                    border-radius: 0%;
+                    padding: 0px;
+                }
+                
+                svg {
+                    padding: 0px;
+                    margin: auto;
+                }
+            }
+        }
+        .mid{
+            width: 671px;
+            gap: 16px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+
+            .comboboxWrapperPequeno {
+                display: flex;
+                width: 100%;
+                align-items: center;
+                justify-content: space-between; 
+                color:#008287;
+              }
+        }
+        .bot_error {
+            width: 671px;
+            height: 24px;
+            display: flex;
+            justify-content: flex-start;
+            margin-top: -24px;
+        }
+        .single__error {
+            color: #d32f2f;
+            font-family: Inter;
+            font-size: 0.88rem;
+            font-weight: 400;
+            margin-top: 10px;
+        }
+        .bot{
+            width: 671px;
+            height: 56px;
+            gap: 24px;
+            display: flex;
+            justify-content: flex-end;
+        }
+      }
+  }
