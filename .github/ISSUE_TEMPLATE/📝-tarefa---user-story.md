@@ -10,7 +10,6 @@ type: Task
 
 ## 🔗 Rastreabilidade
 
-* **Épico:** 
 * **Feature (FT):** 
 * **User Story (US):** 
 ---
