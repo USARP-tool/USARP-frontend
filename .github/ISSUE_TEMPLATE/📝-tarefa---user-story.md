@@ -12,13 +12,15 @@ type: Task
 
 * **Épico:** 
 * **Feature (FT):** 
-* **User Story (US):** ---
+* **User Story (US):** 
+---
 
 ## 🏷️ Cartão (Declaração de Valor)
 
 * **COMO** 
 * **GOSTARIA DE** 
-* **PARA QUE** ---
+* **PARA QUE** 
+---
 
 ## 💬 Conversa (Requisitos e Especificações)
 
