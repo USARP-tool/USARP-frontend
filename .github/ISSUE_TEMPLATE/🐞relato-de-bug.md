@@ -1,5 +1,5 @@
 ---
-name: Relato de Bug
+name: "\U0001F41ERelato de Bug"
 about: Crie um relato detalhado para nos ajudar a rastrear, identificar e corrigir
   um erro.
 title: "[Bug]: <Resuma o problema em poucas palavras>"
