@@ -39,10 +39,10 @@ const CreateProject = () => {
           Yup.object().shape({
             email: Yup.string().email("Digite um Email Valido").required("Email é Obrigatório"),
             roleInProject: Yup.string().required("O Nivel de Acesso é Obrigatório"),
-          })
+          }),
         ),
       }),
-    [isEditMode]
+    [isEditMode],
   );
 
   const { control, formState, handleSubmit, reset } = useForm({
@@ -108,6 +108,10 @@ const CreateProject = () => {
           projectName: data.projectName,
           description: data.description,
           status: data.status,
+          projectTeam: data.projectTeam.map((member) => ({
+            memberEmail: member.email,
+            roleInProject: member.roleInProject,
+          })),
         };
         await axios.put(`${config.baseUrl}/project/${id}`, updatePayload, {
           headers: { Authorization: `Bearer ${token}` },
@@ -220,9 +224,7 @@ const CreateProject = () => {
         </fieldset>
 
         <fieldset>
-          <legend>
-            Equipe do projeto
-          </legend>
+          <legend>Equipe do projeto</legend>
 
           {fields.map((field, index) => (
             <div key={field.id} className={styles.members}>
@@ -262,7 +264,7 @@ const CreateProject = () => {
                 />
               </div>
 
-              {!isEditMode && fields.length > 0 && (
+              {fields.length > 0 && (
                 <button
                   type="button"
                   className={styles.deleteButton}
@@ -278,16 +280,14 @@ const CreateProject = () => {
 
         <div className={styles.buttonGroup}>
           <div>
-            {!isEditMode && (
-              <Button
-                type="button"
-                icon={<Plus />}
-                iconPosition="start"
-                onClick={() => append({ email: "", roleInProject: "" })}
-              >
-                Novo Membro
-              </Button>
-            )}
+            <Button
+              type="button"
+              icon={<Plus />}
+              iconPosition="start"
+              onClick={() => append({ email: "", roleInProject: "" })}
+            >
+              Novo Membro
+            </Button>
           </div>
 
           <div className={styles.actions}>
