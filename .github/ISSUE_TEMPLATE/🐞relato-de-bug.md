@@ -19,6 +19,7 @@ type: Bug
 
 ## 📌 Descrição do Bug
 
+
 ---
 
 ## 🧪 Passos para Reproduzir
