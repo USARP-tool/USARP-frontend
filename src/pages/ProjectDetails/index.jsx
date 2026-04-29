@@ -4,7 +4,7 @@ import styles from "./styles.module.scss";
 const ProjectDetails = () => {
   return (
     <Container>
-      <header> v- Projetos</header>
+      <header>detalhes dos projetos</header>
     </Container>
   );
 };
