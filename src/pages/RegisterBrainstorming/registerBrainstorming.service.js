@@ -67,8 +67,10 @@ const RegisterBrainstormingService = (url) => {
   useEffect(() => {
     const fetchListUserStoriesByProject = async () => {
       try {
-        const { data } = await api.get(`/userstories/${projectId}/user-stories`);
-        setListUserStoriesByProject(formatUserStoriesDataSelection(data.userStories));
+        if (projectId) {
+          const { data } = await api.get(`/userstories/${projectId}/user-stories`);
+          setListUserStoriesByProject(formatUserStoriesDataSelection(data.userStories));
+        }
       } catch (error) {
         setError(error);
       }

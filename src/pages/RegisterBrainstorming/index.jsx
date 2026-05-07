@@ -16,10 +16,47 @@ import { useAlert } from "../../hooks/useAlert";
 export function RegisterBrainstorming() {
   const schema = Yup.object().shape({
     title: Yup.string()
-      .required("Título do Brainstorming e um campo obrigatório!")
+      .required("Título do Brainstorming é um campo obrigatório!")
       .matches(/^[A-Za-z0-9 ]+$/, "O título deve conter apenas letras e números"),
-    date: Yup.string().required("Data e um campo obrigatório!"),
-    hours: Yup.string().required("Horário e um campo obrigatório!"),
+    date: Yup.string()
+      .required("Data e um campo obrigatório!")
+      .test("future-date", "A data deve ser hoje ou no futuro", function (value) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // Parse date string properly (YYYY-MM-DD)
+        const [year, month, day] = value.split("-");
+        const selectedDate = new Date(year, month - 1, day);
+        selectedDate.setHours(0, 0, 0, 0);
+
+        return selectedDate >= today;
+      }),
+    hours: Yup.string()
+      .required("Horário é um campo obrigatório!")
+      .test("future-time-today", "Se a data for hoje, o horário deve ser no futuro", function (value) {
+        if (!value) return true;
+        const date = this.parent.date;
+        if (!date) return true;
+
+        // Parse date string properly (YYYY-MM-DD)
+        const [year, month, day] = date.split("-");
+        const selectedDate = new Date(year, month - 1, day);
+        selectedDate.setHours(0, 0, 0, 0);
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // Only validate time if date is today
+        if (selectedDate.getTime() !== today.getTime()) {
+          return true; // future or past date, any time is fine
+        }
+
+        // Date is today, check if time is in the future
+        const [hour, minute] = value.split(":");
+        const selectedTime = new Date();
+        selectedTime.setHours(parseInt(hour), parseInt(minute));
+        return selectedTime > new Date();
+      }),
     project: Yup.string()
       .transform((value, originalValue) => {
         if (originalValue && typeof originalValue === "object") {
@@ -59,12 +96,14 @@ export function RegisterBrainstorming() {
     handleSubmit,
     getValues,
     watch,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: "all",
     resolver: yupResolver(schema),
   });
   const selectedProjectId = watch("project");
+  const selectedDate = watch("date");
   const navigate = useNavigate();
   const { close } = useAlert();
 
@@ -80,6 +119,12 @@ export function RegisterBrainstorming() {
       setProjectId(null);
     }
   }, [selectedProjectId, setProjectId]);
+
+  useEffect(() => {
+    if (selectedDate) {
+      trigger("hours");
+    }
+  }, [selectedDate, trigger]);
 
   const navegateBrainstorming = () => {
     close(null);
@@ -150,7 +195,14 @@ export function RegisterBrainstorming() {
             </fieldset>
             <fieldset>
               <h6>Data do Brainstorming</h6>
-              <Input.Root {...register("date")} name="date" id="date" type="date" required={errors.date ? true : false}>
+              <Input.Root
+                {...register("date")}
+                name="date"
+                id="date"
+                type="date"
+                min={`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}-${String(new Date().getDate()).padStart(2, "0")}`}
+                required={errors.date ? true : false}
+              >
                 {errors.date && <Input.Error>{errors.date.message}</Input.Error>}
               </Input.Root>
             </fieldset>

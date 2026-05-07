@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { jwtDecode } from "jwt-decode";
 import { createContext, useContext, useEffect, useMemo, useState, useCallback } from "react";
 
+import { setAuthToken } from "../utils/api";
 import useModal from "./useModal";
 import Modal from "../layouts/Modal/Modal";
 
@@ -41,6 +42,7 @@ export const AuthProvider = ({ children }) => {
     setUser(initialUserState);
     localStorage.removeItem("@AccessToken");
     delete axios.defaults.headers.common["Authorization"];
+    setAuthToken(null);
   }, []);
 
   const handleSessionExpired = useCallback(() => {
@@ -75,6 +77,7 @@ export const AuthProvider = ({ children }) => {
         setTokenState(newToken);
         localStorage.setItem("@AccessToken", newToken);
         axios.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
+        setAuthToken(newToken);
 
         setUser({
           id: decoded.id,
@@ -91,7 +94,7 @@ export const AuthProvider = ({ children }) => {
         return false;
       }
     },
-    [handleLogout]
+    [handleLogout],
   );
 
   useEffect(() => {
@@ -106,7 +109,7 @@ export const AuthProvider = ({ children }) => {
           }
         }
         return Promise.reject(error);
-      }
+      },
     );
 
     return () => {
@@ -151,7 +154,7 @@ export const AuthProvider = ({ children }) => {
       signed: user.isAuthenticated,
       isAuthenticated: user.isAuthenticated,
     }),
-    [user, token, isLoading, setToken, handleLogout]
+    [user, token, isLoading, setToken, handleLogout],
   );
 
   return (

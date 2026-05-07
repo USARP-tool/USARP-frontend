@@ -18,12 +18,19 @@ const setAuthToken = (token) => {
 
 api.interceptors.request.use(
   (req) => {
+    const token = localStorage.getItem("@AccessToken");
+    if (token) {
+      req.headers.Authorization = `Bearer ${token}`;
+    } else {
+      delete req.headers.Authorization;
+    }
+
     if (config.isDevelopment) {
       console.log(`[API Request] ${req.method.toUpperCase()} ${req.baseURL}/${req.url}`);
     }
     return req;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 export { api, setAuthToken };
