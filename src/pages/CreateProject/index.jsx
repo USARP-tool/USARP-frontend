@@ -32,8 +32,13 @@ const CreateProject = () => {
   const schema = useMemo(
     () =>
       Yup.object().shape({
-        projectName: Yup.string().required("Nome do Projeto é Obrigatório"),
-        description: Yup.string().optional(),
+        projectName: Yup.string()
+          .min(5, "O nome do projeto deve ter no mínimo 5 caracteres")
+          .required("Nome do Projeto é Obrigatório"),
+        description: Yup.string()
+          .transform((value) => (typeof value === "string" && value.trim() === "" ? undefined : value))
+          .notRequired()
+          .min(5, "A descrição deve ter no mínimo 5 caracteres"),
         status: isEditMode ? Yup.string().required("Status é obrigatório") : Yup.string().optional(),
         projectTeam: Yup.array().of(
           Yup.object().shape({
@@ -106,7 +111,7 @@ const CreateProject = () => {
       if (isEditMode) {
         const updatePayload = {
           projectName: data.projectName,
-          description: data.description,
+          description: data.description ?? "",
           status: data.status,
           projectTeam: data.projectTeam.map((member) => ({
             memberEmail: member.email,
@@ -117,7 +122,12 @@ const CreateProject = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
       } else {
-        const { status, ...createPayload } = data;
+        const createPayload = {
+          ...data,
+          description: data.description ?? "",
+        };
+
+        delete createPayload.status;
 
         await axios.post(`${config.baseUrl}/project/create`, createPayload, {
           headers: { Authorization: `Bearer ${token}` },
