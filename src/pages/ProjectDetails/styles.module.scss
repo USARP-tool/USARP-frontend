@@ -1,9 +1,264 @@
-.container {
+.pageWrapper {
   width: 100%;
-  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--gray-900);
+  gap: 12px;
+  width: fit-content;
+  margin-bottom: 2rem;
+
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  &:hover {
+    color: var(--primary-600);
+  }
+}
+
+.loading {
+  font-size: 1.2rem;
+  color: var(--gray-600);
+  text-align: center;
+  margin-top: 4rem;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 2rem;
+  align-items: flex-start;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- COLUNA ESQUERDA (Detalhes do Projeto) --- */
+.mainCard {
+  background-color: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
   padding: 2rem;
-  background-color: var(--gray-50);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--gray-100);
+  padding-bottom: 1.5rem;
+}
+
+.projectName {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-700);
+  margin: 0;
+}
+
+.actionIcons {
+  display: flex;
+  gap: 1rem;
+
+  .iconBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: var(--gray-100);
+    }
+  }
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.label {
+  font-size: 0.875rem;
+  color: var(--gray-500);
+  font-weight: 500;
+}
+
+.descriptionText {
+  font-size: 1rem;
+  color: var(--gray-800);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.metaRow {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.metaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.metaValue {
+  font-size: 1rem;
+  color: var(--gray-900);
+  font-weight: 500;
+}
+
+.statusBadge {
+  background-color: var(--tertiary-100);
+  color: var(--tertiary-800);
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  width: fit-content;
+}
+
+/* Lista de Usuários */
+.userRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.avatarCreator {
+    background-color: var(--secondary-200);
+    color: var(--secondary-800);
+  }
+
+  &.avatarMember {
+    background-color: var(--primary-200);
+    color: var(--primary-800);
+  }
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.userName {
+  font-weight: 600;
+  color: var(--gray-900);
+  font-size: 1rem;
+}
+
+.userEmail {
+  font-size: 0.875rem;
+  color: var(--gray-500);
+}
+
+.userRole {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+  margin-left: auto;
+}
+
+.membersList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+
+/* --- COLUNA DIREITA (Cards de Resumo) --- */
+.sideCards {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.summaryCard {
+  background-color: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.summaryHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.iconWrapper {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.iconYellow {
+    background-color: var(--tertiary-100);
+  }
+
+  &.iconOrange {
+    background-color: var(--secondary-100);
+  }
+}
+
+.summaryData {
+  display: flex;
+  flex-direction: column;
+}
+
+.summaryCount {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--secondary-700);
+  line-height: 1;
+}
+
+.summaryLabel {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+  margin-top: 4px;
+}
+
+.cardActions {
+  display: flex;
+  gap: 1rem;
+
+  /* Faz os botões ocuparem espaço igual no card */
+  > * {
+    flex: 1;
+  }
 }

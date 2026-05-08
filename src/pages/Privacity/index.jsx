@@ -87,6 +87,11 @@ const Index = () => {
       });
   };
 
+  // Função para bloquear copiar, colar e recortar
+  const handlePreventCopyPaste = (e) => {
+    e.preventDefault();
+  };
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
@@ -132,6 +137,11 @@ const Index = () => {
             error={!!errors.newPassword}
             helperText={errors.newPassword?.message}
             {...register("newPassword")}
+            htmlInputProps={{
+              onCopy: handlePreventCopyPaste,
+              onPaste: handlePreventCopyPaste,
+              onCut: handlePreventCopyPaste,
+            }}
           />
         </div>
 
@@ -144,16 +154,16 @@ const Index = () => {
             error={!!errors.confirmNewPassword}
             helperText={errors.confirmNewPassword?.message}
             {...register("confirmNewPassword")}
+            htmlInputProps={{
+              onCopy: handlePreventCopyPaste,
+              onPaste: handlePreventCopyPaste,
+              onCut: handlePreventCopyPaste,
+            }}
           />
         </div>
 
         <div className={styles.actionArea}>
-          <Button
-            variant="outlined"
-            fullWidth={false}
-            onClick={() => navigate(-1)}
-            sx={{ minWidth: "140px" }}
-          >
+          <Button variant="outlined" fullWidth={false} onClick={() => navigate(-1)} sx={{ minWidth: "140px" }}>
             Cancelar
           </Button>
           <Button type="submit" fullWidth={false} sx={{ minWidth: "140px" }}>

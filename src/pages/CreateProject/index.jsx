@@ -120,7 +120,7 @@ const CreateProject = () => {
         });
       }
       reset();
-      navigate("/projects");
+      navigate("/project");
     } catch (error) {
       console.error("Erro ao salvar projeto:", error);
       if (error.response) {
@@ -145,7 +145,7 @@ const CreateProject = () => {
   return (
     <Container>
       <div>
-        <NavLink to="/projects" className={styles.header}>
+        <NavLink to="/project" className={styles.header}>
           <MoveLeft />
           <h2>{isEditMode ? "Editar Projeto" : "Novo Projeto"}</h2>
         </NavLink>
@@ -296,7 +296,7 @@ const CreateProject = () => {
               variant="outlined"
               onClick={() => {
                 reset();
-                navigate("/projects");
+                navigate("/");
               }}
               disabled={isSubmitting}
             >
