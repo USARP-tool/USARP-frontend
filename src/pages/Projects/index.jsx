@@ -50,7 +50,8 @@ const Projects = () => {
         id: p.id,
         name: p.projectName,
         date: p.createdAt,
-        creator: p.creatorName || "Desconhecido",
+        creator: p.creator ? p.creator.fullName : "Desconhecido",
+
         status: p.status,
         isFavorite: false,
         isHidden: false,

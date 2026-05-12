@@ -18,7 +18,6 @@ export const PROFILE = [
 export const ROLE_IN_PROJECT = [
   { value: "Moderador", label: "Moderador" },
   { value: "Participante", label: "Participante" },
-  { value: "Desenvolvedor(a)", label: "Desenvolvedor(a)" },
 ];
 
 export const COLORSLEVEL = {

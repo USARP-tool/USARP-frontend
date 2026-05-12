@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
-import { MoveLeft, Plus, Trash2 } from "lucide-react";
+import { MoveLeft, Plus, Trash2, CheckCircle } from "lucide-react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
@@ -15,7 +15,8 @@ import ConfirmModal from "../../components/ConfirmModal/ConfirmModal";
 import { config } from "../../utils/config";
 import { useAuth } from "../../hooks/useAuth";
 
-import { ROLE_IN_PROJECT, PROJECT_STATUS } from "../../data/constants";
+import { ROLE_IN_PROJECT } from "../../data/constants";
+import { PROJECT_STATUS } from "../../data/constants";
 import styles from "./styles.module.scss";
 import Container from "../../layouts/Container/Container";
 
@@ -28,30 +29,30 @@ const CreateProject = () => {
 
   const [apiError, setApiError] = useState("");
   const [isLoadingData, setIsLoadingData] = useState(false);
-  const [showExitModal, setShowExitModal] = useState(false);
-  const [memberToDelete, setMemberToDelete] = useState(null);
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null);
+
+  const [successMessage, setSuccessMessage] = useState("");
 
   const schema = useMemo(
     () =>
       Yup.object().shape({
-        projectName: Yup.string().required("Nome do Projeto é Obrigatório"),
-        description: Yup.string().optional(),
-        status: isEditMode
-          ? Yup.string().required("Status é obrigatório")
-          : Yup.string().optional(),
+        projectName: Yup.string()
+          .min(5, "O nome do projeto deve ter no mínimo 5 caracteres")
+          .required("Nome do Projeto é Obrigatório"),
+        description: Yup.string()
+          .transform((value) => (typeof value === "string" && value.trim() === "" ? undefined : value))
+          .notRequired()
+          .min(5, "A descrição deve ter no mínimo 5 caracteres"),
+        status: isEditMode ? Yup.string().required("Status é obrigatório") : Yup.string().optional(),
         projectTeam: Yup.array().of(
           Yup.object().shape({
-            email: Yup.string()
-              .email("Digite um Email Valido")
-              .required("Email é Obrigatório"),
-            roleInProject: Yup.string().required(
-              "O Nivel de Acesso é Obrigatório"
-            ),
-          })
+            email: Yup.string().email("Digite um Email Valido").required("Email é Obrigatório"),
+            roleInProject: Yup.string().required("O Nivel de Acesso é Obrigatório"),
+          }),
         ),
       }),
-    [isEditMode]
+    [isEditMode],
   );
 
   const { control, formState, handleSubmit, reset } = useForm({
@@ -61,7 +62,7 @@ const CreateProject = () => {
       projectName: "",
       description: "",
       status: "",
-      projectTeam: [{ email: "", roleInProject: "", memberId: null }],
+      projectTeam: [{ email: "", roleInProject: "" }],
     },
   });
 
@@ -70,132 +71,92 @@ const CreateProject = () => {
     name: "projectTeam",
   });
 
-  const { errors, isValid, isSubmitting } = formState;
+  const { errors, isValid, isSubmitting, isDirty } = formState;
 
   useEffect(() => {
-    if (!isEditMode || !token) return;
-
-    const fetchProjectData = async () => {
-      setIsLoadingData(true);
-
-      try {
-        const response = await axios.get(
-          `${config.baseUrl}/project/owned-projects`,
-          {
+    if (isEditMode && token) {
+      const fetchProjectData = async () => {
+        setIsLoadingData(true);
+        try {
+          const response = await axios.get(`${config.baseUrl}/project/owned-projects`, {
             headers: { Authorization: `Bearer ${token}` },
+            params: { id: id },
+          });
+
+          const projects = response.data.projects || [];
+          if (projects.length > 0) {
+            const project = projects[0];
+            reset({
+              projectName: project.projectName,
+              description: project.description,
+              status: project.status,
+              projectTeam: project.projectTeam.map((member) => ({
+                email: member.email,
+                roleInProject: member.roleInProject || "",
+              })),
+            });
+          } else {
+            setApiError("Projeto não encontrado ou você não tem permissão.");
           }
-        );
-
-        const project = (response.data.projects || []).find(
-          (p) => String(p.id) === String(id)
-        );
-
-        if (!project) {
-          setApiError("Projeto não encontrado.");
-          return;
+        } catch (error) {
+          console.error("Erro ao buscar dados do projeto", error);
+          setApiError("Erro ao carregar dados do projeto.");
+        } finally {
+          setIsLoadingData(false);
         }
+      };
 
-        reset({
-          projectName: project.projectName,
-          description: project.description,
-          status: project.status,
-          projectTeam: project.projectTeam?.length
-            ? project.projectTeam.map((m) => ({
-                email: m.email,
-                roleInProject: m.roleInProject,
-                memberId: m.memberId,
-              }))
-            : [{ email: "", roleInProject: "", memberId: null }],
-        });
-      } catch (error) {
-        console.error(error);
-        setApiError("Erro ao carregar dados.");
-      } finally {
-        setIsLoadingData(false);
-      }
-    };
-
-    fetchProjectData();
-  }, [isEditMode, id, token, reset]);
-
-  const updateRole = async (memberId, role) => {
-    if (!memberId) return;
-
-    try {
-      await axios.put(
-        `${config.baseUrl}/project/${id}/members/${memberId}`,
-        { roleInProject: role },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-    } catch {
-      alert("Erro ao atualizar papel");
+      fetchProjectData();
     }
-  };
+  }, [isEditMode, id, token, reset]);
 
   const handleSubmitForm = async (data) => {
     setApiError("");
-
     try {
       if (isEditMode) {
-        await axios.put(
-          `${config.baseUrl}/project/${id}`,
-          {
+        const payload = {
+          projectName: data.projectName,
+          description: data.description ?? "",
+          status: data.status,
+          projectTeam: (data.projectTeam ?? []).map((member) => ({
+            memberEmail: member.email,
+            roleInProject: member.roleInProject,
+          })),
+        };
+        await axios.put(`${config.baseUrl}/project/${id}`, payload, {
+          headers: { Authorization: `Bearer ${token}` },
+        });setSuccessMessage("Projeto atualizado com sucesso!");
+            setTimeout(() => {
+              navigate("/projects");
+            }, 1200);
+        } else {
+          const createPayload = {
             projectName: data.projectName,
-            description: data.description,
-            status: data.status,
-          },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+            description: data.description ?? "",
+            projectTeam: (data.projectTeam ?? []).map((member) => ({
+              email: member.email,
+              roleInProject: member.roleInProject,
+            })),
+          };
 
-        for (const member of data.projectTeam) {
-          if (!member.memberId && member.email) {
-            await axios.post(
-              `${config.baseUrl}/project/${id}/addMember`,
-              { memberEmail: member.email, 
-                role: "Participante"
-
-              },
-              {
-                headers: { Authorization: `Bearer ${token}` },
-              }
-            );
-          }
+          await axios.post(`${config.baseUrl}/project/create`, createPayload, {
+            headers: { Authorization: `Bearer ${token}` },
+        });setSuccessMessage("Projeto salvo com sucesso!");
+      }
+      reset();
+      setTimeout(() => {
+        navigate("/projects");
+      }, 1200);
+    } catch (error) {
+      console.error("Erro ao salvar projeto:", error);
+      if (error.response) {
+        setApiError(error.response.data.message || "Erro ao salvar.");
+        if (error.response.data.errors) {
+          setApiError(error.response.data.errors.join(", "));
         }
       } else {
-        const { status, ...payload } = data;
-
-        await axios.post(`${config.baseUrl}/project/create`, payload, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        setApiError("Erro de conexão com o servidor.");
       }
-
-      setShowSuccess(true);
-    } catch (error) {
-      console.log("STATUS:", error.response?.status);
-      console.log("DATA:", error.response?.data);
-      console.log("ERRO COMPLETO:", error);
-      console.log(error.response?.data);
-      setApiError(error.response?.data?.message || "Erro ao salvar projeto");
-    }
-  };
-
-  const handleDeleteMember = async () => {
-    if (!memberToDelete?.memberId) return;
-
-    try {
-      await axios.delete(
-        `${config.baseUrl}/project/${id}/removeMember/${memberToDelete.memberId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      setMemberToDelete(null);
-      window.location.reload();
-    } catch {
-      alert("Erro ao remover membro");
     }
   };
 
@@ -209,47 +170,74 @@ const CreateProject = () => {
 
   return (
     <Container>
-      {/* HEADER */}
       <div>
-        <NavLink
-          to="#"
-          className={styles.header}
-          onClick={(e) => {
-            e.preventDefault();
-            setShowExitModal(true);
-          }}
-        >
+        <NavLink to="/projects" className={styles.header}>
           <MoveLeft />
           <h2>{isEditMode ? "Editar Projeto" : "Novo Projeto"}</h2>
         </NavLink>
       </div>
 
-      {/* ERROR */}
       {apiError && (
-        <div className={styles.errorBox}>
+        <div
+          style={{
+            padding: "1rem",
+            marginBottom: "1rem",
+            backgroundColor: "#fee2e2",
+            color: "#b91c1c",
+            borderRadius: "8px",
+          }}
+        >
           {apiError}
         </div>
+      )}{successMessage && (
+          <div
+            style={{
+              padding: "1rem",
+              marginBottom: "1rem",
+              backgroundColor: "#dcfce7",
+              color: "#166534",
+              borderRadius: "8px",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            <CheckCircle size={18} />
+          {successMessage}
+          </div>
       )}
 
-      {/* FORM */}
       <form onSubmit={handleSubmit(handleSubmitForm)} noValidate>
         <fieldset>
           <legend>Dados Gerais</legend>
-
           <div className={styles.project}>
             <Controller
               name="projectName"
               control={control}
               render={({ field }) => (
-                <Input {...field} label="Nome do Projeto" />
+                <Input
+                  {...field}
+                  label="Nome do Projeto"
+                  placeholder="Digite o Nome do Seu Projeto"
+                  required
+                  error={!!errors.projectName}
+                  helperText={errors.projectName?.message}
+                />
               )}
             />
-
             <Controller
               name="description"
               control={control}
               render={({ field }) => (
-                <Input {...field} label="Descrição (Opcional)" />
+                <Input
+                  {...field}
+                  label="Descrição do Projeto (Opcional)"
+                  placeholder="Pequena descrição do projeto"
+                  multiline={true}
+                  rows={3}
+                  error={!!errors.description}
+                  helperText={errors.description?.message}
+                />
               )}
             />
 
@@ -260,8 +248,12 @@ const CreateProject = () => {
                 render={({ field }) => (
                   <Select
                     {...field}
-                    label="Status"
+                    label="Status do Projeto"
                     options={PROJECT_STATUS}
+                    required
+                    error={!!errors.status}
+                    helperText={errors.status?.message}
+                    placeholder="Selecione o status"
                   />
                 )}
               />
@@ -272,72 +264,85 @@ const CreateProject = () => {
         <fieldset>
           <legend>Equipe do projeto</legend>
 
-          {fields.map((member, index) => (
-            <div key={member.id} className={styles.members}>
-              <Controller
-                name={`projectTeam.${index}.email`}
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    label="Email"
-                    disabled={isEditMode && !!member.memberId}
-                  />
-                )}
-              />
+          {fields.map((field, index) => (
+            <div key={field.id} className={styles.members}>
+              <div className={styles.emailInputWrapper}>
+                <Controller
+                  name={`projectTeam.${index}.email`}
+                  control={control}
+                  render={({ field: inputField }) => (
+                    <Input
+                      {...inputField}
+                      label="E-mail do membro"
+                      type="email"
+                      placeholder="exemplo@email.com"
+                      error={!!errors.projectTeam?.[index]?.email}
+                      helperText={errors.projectTeam?.[index]?.email?.message}
+                      required={!isEditMode}
+                    />
+                  )}
+                />
+              </div>
 
-              <Controller
-                name={`projectTeam.${index}.roleInProject`}
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    label="Papel"
-                    options={ROLE_IN_PROJECT}
-                    onChange={(e) => {
-                      field.onChange(e);
-                      if (member.memberId) {
-                        updateRole(member.memberId, e.target.value);
-                      }
-                    }}
-                  />
-                )}
-              />
+              <div className={styles.roleSelectWrapper}>
+                <Controller
+                  name={`projectTeam.${index}.roleInProject`}
+                  control={control}
+                  render={({ field: inputField }) => (
+                    <Select
+                      {...inputField}
+                      label="Papel dentro do projeto"
+                      error={!!errors.projectTeam?.[index]?.roleInProject}
+                      helperText={errors.projectTeam?.[index]?.roleInProject?.message}
+                      options={ROLE_IN_PROJECT}
+                      required={!isEditMode}
+                      placeholder="Selecione"
+                    />
+                  )}
+                />
+              </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  if (isEditMode) {
-                    setMemberToDelete(member);
-                  } else {
-                    remove(index);
-                  }
-                }}
-              >
-                <Trash2 />
-              </button>
+              {fields.length > 0 && (
+                <button
+                  type="button"
+                  className={styles.deleteButton}
+                  onClick={() =>{
+                    setPendingAction(() => () => remove(index));
+                    setShowConfirm(true);
+                  }}
+                  title="Remover membro"
+                >
+                  <Trash2 />
+                </button>
+              )}
             </div>
           ))}
         </fieldset>
 
-        {/* BUTTONS */}
         <div className={styles.buttonGroup}>
-          <Button
-            type="button"
-            onClick={() =>
-              append({ email: "", roleInProject: "", memberId: null })
-            }
-          >
-            <Plus /> Novo Membro
-          </Button>
+          <div>
+            <Button
+              type="button"
+              icon={<Plus />}
+              iconPosition="start"
+              onClick={() => append({ email: "", roleInProject: "" })}
+            >
+              Novo Membro
+            </Button>
+          </div>
 
           <div className={styles.actions}>
             <Button
               type="reset"
               variant="outlined"
               onClick={() => {
-                reset();
-                navigate("/projects");
+                if(isDirty){
+                  setPendingAction(() => () => navigate("/projects"));
+                  setShowConfirm(true);
+                }else{
+                  navigate("/projects");
+                }
+              
               }}
               disabled={isSubmitting}
             >
@@ -345,53 +350,23 @@ const CreateProject = () => {
             </Button>
 
             <Button type="submit" disabled={!isValid || isSubmitting}>
-              {isSubmitting
-                ? "Salvando..."
-                : isEditMode
-                ? "Atualizar"
-                : "Cadastrar"}
+              {isSubmitting ? "Salvando..." : isEditMode ? "Salvar Atualização" : "Cadastrar"}
             </Button>
           </div>
         </div>
       </form>
-
-      {/* MODAIS */}
-      {showExitModal && (
-        <ConfirmModal
-          type="warning"
-          title="Atenção!"
-          message="Deseja sair sem salvar?"
-          confirmText="Continuar aqui"
-          cancelText="Sair"
-          onConfirm={() => setShowExitModal(false)}
-          onCancel={() => navigate("/projects")}
-        />
-      )}
-
-      {memberToDelete && (
-        <ConfirmModal
-          type="warning"
-          title="Remover membro?"
-          message="Ele perderá acesso ao projeto."
-          confirmText="Excluir"
-          cancelText="Cancelar"
-          onConfirm={handleDeleteMember}
-          onCancel={() => setMemberToDelete(null)}
-        />
-      )}
-
-      {showSuccess && (
-        <ConfirmModal
-          type="success"
-          title="Sucesso!"
-          message="Projeto salvo com sucesso!"
-          confirmText="OK"
-          onConfirm={() => {
-            setShowSuccess(false);
-            navigate("/projects");
-          }}
-        />
-      )}
+        {showConfirm && (
+          <ConfirmModal
+            type="warning"
+            title="Tem certeza?"
+            message="Você tem alterações não salvas. Deseja realmente sair?"
+            onCancel={() => setShowConfirm(false)}
+            onConfirm={() => {
+              setShowConfirm(false);
+              pendingAction?.();
+            }}
+          />
+        )} 
     </Container>
   );
 };
