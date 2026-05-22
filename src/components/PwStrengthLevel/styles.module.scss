@@ -1,13 +1,14 @@
 .levels {
   display: flex;
   justify-content: space-between;
-  margin-top: -20px;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+  padding: 0.5rem 0;
 }
 
-.bar::before {
-  content: "";
-  display: flex;
+.bar {
+  flex: 1;
   height: 8px;
-  width: 130px;
-
+  border-radius: 30px;
 }

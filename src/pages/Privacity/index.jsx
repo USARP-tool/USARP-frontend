@@ -11,6 +11,7 @@ import useModal from "../../hooks/useModal";
 import Button from "../../components/ui/Button/Button";
 import Input from "../../components/ui/Input/Input";
 import Modal from "../../layouts/Modal/Modal";
+import PwStrengthLevel from "../../components/PwStrengthLevel/PwStrengthLevel";
 import { config } from "../../utils/config";
 
 import styles from "./styles.module.scss";
@@ -46,10 +47,13 @@ const Index = () => {
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm({
     mode: "onBlur",
     resolver: yupResolver(schema),
   });
+
+  const newPasswordValue = watch("newPassword", "");
 
   const onSubmit = (data) => {
     axios
@@ -135,6 +139,10 @@ const Index = () => {
           />
         </div>
 
+        <div className={styles.strengthWrapper}>
+          <PwStrengthLevel password={newPasswordValue} />
+        </div>
+
         <div className={styles.inputGroup}>
           <label className={styles.label}>Confirme a senha</label>
           <Input
@@ -148,12 +156,7 @@ const Index = () => {
         </div>
 
         <div className={styles.actionArea}>
-          <Button
-            variant="outlined"
-            fullWidth={false}
-            onClick={() => navigate(-1)}
-            sx={{ minWidth: "140px" }}
-          >
+          <Button variant="outlined" fullWidth={false} onClick={() => navigate(-1)} sx={{ minWidth: "140px" }}>
             Cancelar
           </Button>
           <Button type="submit" fullWidth={false} sx={{ minWidth: "140px" }}>
