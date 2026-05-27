@@ -11,7 +11,7 @@ import { Text } from "../Text";
 export function FeedbackAlertDescription({ description, ...rest }) {
   return (
     <Text.Body
-      classname="description"
+      className="description"
       data-type="medium"
       {...rest}
       dangerouslySetInnerHTML={{ __html: description }}

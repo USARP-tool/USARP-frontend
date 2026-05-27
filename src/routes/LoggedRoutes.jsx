@@ -9,12 +9,14 @@ import Project from "../pages/Projects";
 import CreateProject from "../pages/CreateProject";
 import ProjectDetails from "../pages/ProjectDetails";
 import Privacity from "../pages/Privacity";
+import ViewUserStories from "../pages/ViewUserStories";
 
-import { ViewBrainstorming } from "../pages/ViewBrainstorming";
+import  {ViewBrainstorming} from "../pages/ViewBrainstorming";
 import { RegisterBrainstorming } from "../pages/RegisterBrainstorming";
 import { BrainstormingChecklist } from "../pages/BrainstormingChecklist";
 import { RegisterUserstory } from "../pages/RegisterUserstory";
 import { OrdemUserstory } from "../pages/OrdemUserstory";
+
 
 export function LoggedRoutes() {
   return (
@@ -32,8 +34,11 @@ export function LoggedRoutes() {
         <Route path="registerBrainstorming" element={<RegisterBrainstorming />} />
         <Route path="brainstormingChecklist" element={<BrainstormingChecklist />} />
 
-        <Route path="registerUserstory" element={<RegisterUserstory />} />
+        <Route  path="registerUserstory"  element={<RegisterUserstory />} />
+        <Route path="registerUserstory/:projectId" element={<RegisterUserstory />} />
+        <Route path="userstories/:projectId"  element={<ViewUserStories />}/>
       </Route>
+
 
       <Route path="/ordemUserstory" element={<OrdemUserstory />} />
 

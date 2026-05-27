@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
-import { MoveLeft, Plus, Trash2 } from "lucide-react";
+import { MoveLeft, Plus, Trash2, CheckCircle } from "lucide-react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
@@ -10,6 +10,7 @@ import * as Yup from "yup";
 import Input from "../../components/ui/Input/Input";
 import Select from "../../components/ui/Select/Select";
 import Button from "../../components/ui/Button/Button";
+import ConfirmModal from "../../components/ConfirmModal/ConfirmModal";
 
 import { config } from "../../utils/config";
 import { useAuth } from "../../hooks/useAuth";
@@ -28,9 +29,18 @@ const CreateProject = () => {
 
   const [apiError, setApiError] = useState("");
   const [isLoadingData, setIsLoadingData] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null);
 
+  const [successMessage, setSuccessMessage] = useState("");
+  const [showRemoveMemberConfirm, setShowRemoveMemberConfirm] = useState(false);
+  const [removeMemberAction, setRemoveMemberAction] = useState(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  
   const schema = useMemo(
     () =>
+      
       Yup.object().shape({
         projectName: Yup.string()
           .min(5, "O nome do projeto deve ter no mínimo 5 caracteres")
@@ -66,7 +76,7 @@ const CreateProject = () => {
     name: "projectTeam",
   });
 
-  const { errors, isValid, isSubmitting } = formState;
+  const { errors, isValid, isSubmitting, isDirty } = formState;
 
   useEffect(() => {
     if (isEditMode && token) {
@@ -109,32 +119,39 @@ const CreateProject = () => {
     setApiError("");
     try {
       if (isEditMode) {
-        const updatePayload = {
+        const payload = {
           projectName: data.projectName,
           description: data.description ?? "",
           status: data.status,
-          projectTeam: data.projectTeam.map((member) => ({
+          projectTeam: (data.projectTeam ?? []).map((member) => ({
             memberEmail: member.email,
             roleInProject: member.roleInProject,
           })),
         };
-        await axios.put(`${config.baseUrl}/project/${id}`, updatePayload, {
+        await axios.put(`${config.baseUrl}/project/${id}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
-        });
-      } else {
-        const createPayload = {
-          ...data,
-          description: data.description ?? "",
-        };
+        });setShowSuccessModal(true);
+            setTimeout(() => {
+              navigate("/projects");
+            }, 1200);
+        } else {
+          const createPayload = {
+            projectName: data.projectName,
+            description: data.description ?? "",
+            projectTeam: (data.projectTeam ?? []).map((member) => ({
+              email: member.email,
+              roleInProject: member.roleInProject,
+            })),
+          };
 
-        delete createPayload.status;
-
-        await axios.post(`${config.baseUrl}/project/create`, createPayload, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+          await axios.post(`${config.baseUrl}/project/create`, createPayload, {
+            headers: { Authorization: `Bearer ${token}` },
+        });setSuccessMessage("Projeto salvo com sucesso!");
       }
       reset();
-      navigate("/projects");
+      setTimeout(() => {
+        navigate("/projects");
+      }, 1200);
     } catch (error) {
       console.error("Erro ao salvar projeto:", error);
       if (error.response) {
@@ -278,7 +295,10 @@ const CreateProject = () => {
                 <button
                   type="button"
                   className={styles.deleteButton}
-                  onClick={() => remove(index)}
+                  onClick={() =>{
+                    setRemoveMemberAction(() => () => remove(index));
+                    setShowRemoveMemberConfirm(true);
+                  }}
                   title="Remover membro"
                 >
                   <Trash2 />
@@ -305,8 +325,13 @@ const CreateProject = () => {
               type="reset"
               variant="outlined"
               onClick={() => {
-                reset();
-                navigate("/projects");
+                if(isDirty){
+                  setPendingAction(() => () => navigate("/projects"));
+                  setShowConfirm(true);
+                }else{
+                  navigate("/projects");
+                }
+              
               }}
               disabled={isSubmitting}
             >
@@ -318,7 +343,48 @@ const CreateProject = () => {
             </Button>
           </div>
         </div>
-      </form>
+      </form>{/* MODAL SAIR SEM SALVAR */}
+        {showConfirm && (
+          <ConfirmModal
+            type="warning"
+            title="Tem certeza?"
+            message="Você tem alterações não salvas. Deseja realmente sair?"
+            confirmText="Sair da página"
+            cancelText="Continuar editando"
+            onCancel={() => setShowConfirm(false)}
+            onConfirm={() => {
+              setShowConfirm(false);
+              pendingAction?.();
+            }}
+          />
+        )}
+
+        {/* MODAL EXCLUIR MEMBRO */}
+        {showRemoveMemberConfirm && (
+          <ConfirmModal
+            type="warning"
+            title="Remover membro?"
+            message="Ao remover este membro, ele perderá acesso ao projeto e às informações relacionadas."
+            confirmText="Excluir membro"
+            cancelText="Cancelar"
+            onCancel={() => setShowRemoveMemberConfirm(false)}
+            onConfirm={() => {
+              setShowRemoveMemberConfirm(false);
+              removeMemberAction?.();
+            }}
+          />
+        )}
+        {showSuccessModal && (
+          <ConfirmModal
+            type="success"
+            title="Excelente!"
+            message="Projeto atualizado com sucesso! Você será redirecionado para a página de projetos."
+            onConfirm={() => {
+              setShowSuccessModal(false);
+              navigate("/projects");
+            }}
+          />
+        )}
     </Container>
   );
 };

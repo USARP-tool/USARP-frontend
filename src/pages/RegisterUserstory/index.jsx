@@ -5,7 +5,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { Expansible } from "../../components/Expansible/indes";
 import { InputCombobox } from "../../components/InputCombobox";
 import { FeedbackAlert } from "../../components/FeedbackAlert";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { UserStoryFormFields } from "./UserStoryFormFields";
 import RegisterUserstoryService from "./registerUserstory.service";
 import * as Yup from "yup";
@@ -13,7 +13,7 @@ import styles from "./styles.module.scss";
 import { useAlert } from "../../hooks/useAlert";
 import { useTranslation } from "react-i18next";
 import { Toast } from "../../components/Toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export function RegisterUserstory() {
   const schema = Yup.object().shape({
@@ -27,8 +27,11 @@ export function RegisterUserstory() {
       .required("O projeto é um campo obrigatório"),
     userStory: Yup.array().of(
       Yup.object().shape({
-        userStorieNumber: Yup.number()
-          .typeError("O número da US deve ser um valor numérico.")
+        userStorieNumber: Yup.string()
+          .matches(
+            /^[a-zA-Z0-9]+$/,
+            "Apenas letras e números são permitidos."
+          )
           .required("O número da US é um campo obrigatório!"),
         userStoriesTitle: Yup.string().required(
           "O Título da US é um campo obrigatório!"
@@ -70,6 +73,7 @@ export function RegisterUserstory() {
   });
 
     const { t } = useTranslation();
+    const { projectId } = useParams();
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -87,11 +91,16 @@ export function RegisterUserstory() {
         us.confirmation
     );
     const body = {
-      projectId: data.project.value,
+      projectId: projectId || data.project.value,
       userStories: completeUserStories,
     };
 
-    registerUserstory(body, contentSuccess, null, contentWarning);
+    registerUserstory(
+      body, 
+      contentSuccess, 
+      contentServerError, 
+      contentConnectionError
+    );
   };
 
   const {
@@ -100,6 +109,17 @@ export function RegisterUserstory() {
     registerUserstory,
     handleBackBackCloseALert,
   } = RegisterUserstoryService();
+  useEffect(() => {
+    if (projectId && projectList.length > 0) {
+      const selectedProject = projectList.find(
+        (item) => item.value === projectId
+      );
+
+      if (selectedProject) {
+        setValue("project", selectedProject);
+      }
+    }
+  }, [projectId, projectList, setValue]);
 
   const handleAddNewStory = async () => {
     const lastIndex = fields.length - 1;
@@ -161,7 +181,9 @@ export function RegisterUserstory() {
     close(null);
   };
   const navegateSessionDetails = () => {
-    navigate(`/DetailProject/${projectValue.value}`, { replace: true });
+    navigate(
+      `/project/${projectId || projectValue.value}`, 
+      { replace: true });
     close(null);
   };
 
@@ -198,7 +220,10 @@ export function RegisterUserstory() {
         </Button.Root>
         <Button.Root
           data-type="primary"
-          onClick={() => handleBackBackCloseALert()}
+          onClick={() => handleBackBackCloseALert(
+            projectId || projectValue?.value
+          )
+        }
         >
           <Button.Text>Sim, continuar</Button.Text>
         </Button.Root>
@@ -222,16 +247,64 @@ export function RegisterUserstory() {
       </div>
     </FeedbackAlert.Root>
   );
+  const contentServerError = (
+  <FeedbackAlert.Root>
+    <FeedbackAlert.Icon icon="warningcircle" />
+
+    <FeedbackAlert.Title title="Erro de servidor!" />
+
+    <FeedbackAlert.Description
+      description="Erro ao adicionar a user story. Erro de servidor."
+    />
+    <div className={styles.alert__buttons}>
+      <Button.Root
+        data-type="primary"
+        onClick={() => close(null)}
+      >
+        <Button.Text>Fechar</Button.Text>
+      </Button.Root>
+    </div>
+  </FeedbackAlert.Root>
+);
+const contentConnectionError = (
+  <FeedbackAlert.Root>
+    <FeedbackAlert.Icon icon="warningcircle" />
+
+    <FeedbackAlert.Title title="Erro de conexão!" />
+
+    <FeedbackAlert.Description
+      description="Erro ao adicionar a user story. Erro de conexão."
+    />
+
+    <div className={styles.alert__buttons}>
+      <Button.Root
+        data-type="primary"
+        onClick={() => close(null)}
+      >
+        <Button.Text>Fechar</Button.Text>
+      </Button.Root>
+    </div>
+  </FeedbackAlert.Root>
+);
 
   return (
     <div className={styles.registerUserstory__container}>
       <header>
         <span title="voltar">
           <IconChoice
-            onClick={() => handleBackButton(watch(), contentWarning)}
+            onClick={() => handleBackButton(
+              watch(), 
+              contentWarning,
+              projectId || projectValue?.value
+            )
+          }
             icon="back"
           />
-          <h4>Criar Histórias de Usuário</h4>
+          <h4>
+            {projectId
+              ? "Adicionar Novas Histórias de Usuário"
+              : "Criar Histórias de Usuário"}
+          </h4>
         </span>
       </header>
       {errors.userStory && (
@@ -246,6 +319,7 @@ export function RegisterUserstory() {
       )}
       <form>
         <div className={styles.generaldata__container}>
+          {!projectId && (
           <fieldset style={{ paddingBottom: "1.5rem" }}>
             <h6>Selecionar projeto</h6>
             <InputCombobox.Root>
@@ -263,6 +337,7 @@ export function RegisterUserstory() {
               )}
             </InputCombobox.Root>
           </fieldset>
+          )}
         </div>
 
         {committedStories.map((item, index) => {
@@ -307,7 +382,12 @@ export function RegisterUserstory() {
         <div>
           <Button.Root
             type="button"
-            onClick={() => handleBackButton(watch(), contentWarning)}
+            onClick={() => handleBackButton(
+              watch(), 
+              contentWarning,
+              projectId || projectValue?.value
+            )
+          }
             data-type="secondary"
           >
             <Button.Text>Cancelar</Button.Text>
@@ -318,7 +398,9 @@ export function RegisterUserstory() {
             type="button"
             onClick={handleSubmitForm}
           >
-            <Button.Text>Cadastrar</Button.Text>
+            <Button.Text>
+              {projectId ? "Salvar User Story" : "Cadastrar" }
+            </Button.Text>
           </Button.Root>
         </div>
       </div>

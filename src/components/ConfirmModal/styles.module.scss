@@ -1,0 +1,113 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 999;
+}
+
+.modal {
+  width: 320px;
+  background: #fff;
+  border-radius: 18px;
+
+  padding: 32px 24px 24px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.iconWarning,
+.iconSuccess {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 22px;
+
+  color: white;
+}
+
+.iconWarning {
+  background: #f5b82e;
+}
+
+.iconSuccess {
+  background: #08a9b5;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #004b57;
+
+  margin-bottom: 14px;
+}
+
+.message {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #6c6c6c;
+
+  margin-bottom: 28px;
+}
+
+.actions {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.cancel,
+.confirm,
+.ok {
+  border: none;
+  border-radius: 12px;
+
+  padding: 12px 22px;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+/* BOTÃO CANCELAR */
+.cancel {
+  background: white;
+  border: 1.5px solid #e53935;
+  color: #e53935;
+}
+
+.cancel:hover {
+  background: #fff5f5;
+}
+
+/* BOTÃO CONFIRMAR */
+.confirm,
+.ok {
+  background: #0097a7;
+  color: white;
+}
+
+.confirm:hover,
+.ok:hover {
+  background: #007d8a;
+}
