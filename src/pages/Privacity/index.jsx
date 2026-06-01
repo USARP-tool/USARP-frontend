@@ -11,6 +11,7 @@ import useModal from "../../hooks/useModal";
 import Button from "../../components/ui/Button/Button";
 import Input from "../../components/ui/Input/Input";
 import Modal from "../../layouts/Modal/Modal";
+import PwStrengthLevel from "../../components/PwStrengthLevel/PwStrengthLevel";
 import { config } from "../../utils/config";
 
 import styles from "./styles.module.scss";
@@ -47,11 +48,13 @@ const Index = () => {
     handleSubmit,
     formState: { errors },
     reset,
-    setError,
+    watch,
   } = useForm({
     mode: "onBlur",
     resolver: yupResolver(schema),
   });
+
+  const newPasswordValue = watch("newPassword", "");
 
   const onSubmit = (data) => {
     axios
@@ -153,6 +156,10 @@ const Index = () => {
               onCut: handlePreventCopyPaste,
             }}
           />
+        </div>
+
+        <div className={styles.strengthWrapper}>
+          <PwStrengthLevel password={newPasswordValue} />
         </div>
 
         <div className={styles.inputGroup}>
