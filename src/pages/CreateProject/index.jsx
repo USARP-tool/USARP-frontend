@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
-import { MoveLeft, Plus, Trash2 } from "lucide-react";
+import { MoveLeft, Plus, Trash2, CheckCircle } from "lucide-react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
@@ -10,6 +10,7 @@ import * as Yup from "yup";
 import Input from "../../components/ui/Input/Input";
 import Select from "../../components/ui/Select/Select";
 import Button from "../../components/ui/Button/Button";
+import ConfirmModal from "../../components/ConfirmModal/ConfirmModal";
 
 import { config } from "../../utils/config";
 import { useAuth } from "../../hooks/useAuth";
@@ -28,6 +29,10 @@ const CreateProject = () => {
 
   const [apiError, setApiError] = useState("");
   const [isLoadingData, setIsLoadingData] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null);
+
+  const [successMessage, setSuccessMessage] = useState("");
 
   const schema = useMemo(
     () =>
@@ -66,7 +71,7 @@ const CreateProject = () => {
     name: "projectTeam",
   });
 
-  const { errors, isValid, isSubmitting } = formState;
+  const { errors, isValid, isSubmitting, isDirty } = formState;
 
   useEffect(() => {
     if (isEditMode && token) {
@@ -109,32 +114,39 @@ const CreateProject = () => {
     setApiError("");
     try {
       if (isEditMode) {
-        const updatePayload = {
+        const payload = {
           projectName: data.projectName,
           description: data.description ?? "",
           status: data.status,
-          projectTeam: data.projectTeam.map((member) => ({
+          projectTeam: (data.projectTeam ?? []).map((member) => ({
             memberEmail: member.email,
             roleInProject: member.roleInProject,
           })),
         };
-        await axios.put(`${config.baseUrl}/project/${id}`, updatePayload, {
+        await axios.put(`${config.baseUrl}/project/${id}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
-        });
-      } else {
-        const createPayload = {
-          ...data,
-          description: data.description ?? "",
-        };
+        });setSuccessMessage("Projeto atualizado com sucesso!");
+            setTimeout(() => {
+              navigate("/projects");
+            }, 1200);
+        } else {
+          const createPayload = {
+            projectName: data.projectName,
+            description: data.description ?? "",
+            projectTeam: (data.projectTeam ?? []).map((member) => ({
+              email: member.email,
+              roleInProject: member.roleInProject,
+            })),
+          };
 
-        delete createPayload.status;
-
-        await axios.post(`${config.baseUrl}/project/create`, createPayload, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+          await axios.post(`${config.baseUrl}/project/create`, createPayload, {
+            headers: { Authorization: `Bearer ${token}` },
+        });setSuccessMessage("Projeto salvo com sucesso!");
       }
       reset();
-      navigate("/projects");
+      setTimeout(() => {
+        navigate("/projects");
+      }, 1200);
     } catch (error) {
       console.error("Erro ao salvar projeto:", error);
       if (error.response) {
@@ -177,6 +189,22 @@ const CreateProject = () => {
         >
           {apiError}
         </div>
+      )}{successMessage && (
+          <div
+            style={{
+              padding: "1rem",
+              marginBottom: "1rem",
+              backgroundColor: "#dcfce7",
+              color: "#166534",
+              borderRadius: "8px",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            <CheckCircle size={18} />
+          {successMessage}
+          </div>
       )}
 
       <form onSubmit={handleSubmit(handleSubmitForm)} noValidate>
@@ -278,7 +306,10 @@ const CreateProject = () => {
                 <button
                   type="button"
                   className={styles.deleteButton}
-                  onClick={() => remove(index)}
+                  onClick={() =>{
+                    setPendingAction(() => () => remove(index));
+                    setShowConfirm(true);
+                  }}
                   title="Remover membro"
                 >
                   <Trash2 />
@@ -305,8 +336,13 @@ const CreateProject = () => {
               type="reset"
               variant="outlined"
               onClick={() => {
-                reset();
-                navigate("/projects");
+                if(isDirty){
+                  setPendingAction(() => () => navigate("/projects"));
+                  setShowConfirm(true);
+                }else{
+                  navigate("/projects");
+                }
+              
               }}
               disabled={isSubmitting}
             >
@@ -319,6 +355,18 @@ const CreateProject = () => {
           </div>
         </div>
       </form>
+        {showConfirm && (
+          <ConfirmModal
+            type="warning"
+            title="Tem certeza?"
+            message="Você tem alterações não salvas. Deseja realmente sair?"
+            onCancel={() => setShowConfirm(false)}
+            onConfirm={() => {
+              setShowConfirm(false);
+              pendingAction?.();
+            }}
+          />
+        )} 
     </Container>
   );
 };
