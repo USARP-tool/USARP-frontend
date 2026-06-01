@@ -35,6 +35,7 @@ const Index = () => {
     newPassword: Yup.string()
       .required("A nova senha é obrigatória!")
       .min(6, "A nova senha deve ter pelo menos 6 caracteres!")
+      .max(15, "A nova senha deve ter no máximo 15 caracteres!")
       .notOneOf([Yup.ref("currentPassword")], "A nova senha não pode ser igual à senha atual!"),
     confirmNewPassword: Yup.string()
       .required("Confirme a nova senha!")
