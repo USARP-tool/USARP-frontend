@@ -47,6 +47,7 @@ const Index = () => {
     handleSubmit,
     formState: { errors },
     reset,
+    setError,
   } = useForm({
     mode: "onBlur",
     resolver: yupResolver(schema),
@@ -67,10 +68,18 @@ const Index = () => {
       })
       .catch((error) => {
         const status = error.response?.status;
+
         let errorMessage = "Ocorreu um erro inesperado. Tente novamente.";
 
         if (status === 400) {
-          errorMessage = "Dados inválidos. Verifique as senhas informadas.";
+          const msg = "Senha atual incorreta. Verifique e tente novamente.";
+
+          setError("currentPassword", {
+            type: "manual",
+            message: msg,
+          });
+
+          errorMessage = msg;
         } else if (status === 401) {
           errorMessage = "Não autorizado. Faça login novamente.";
         } else if (status === 404) {
