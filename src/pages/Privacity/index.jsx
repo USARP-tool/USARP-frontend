@@ -35,7 +35,8 @@ const Index = () => {
     currentPassword: Yup.string().required("A senha atual é obrigatória!"),
     newPassword: Yup.string()
       .required("A nova senha é obrigatória!")
-      .min(8, "A nova senha deve ter pelo menos 6 caracteres!")
+      .min(6, "A nova senha deve ter pelo menos 6 caracteres!")
+      .max(15, "A nova senha deve ter no máximo 15 caracteres!")
       .notOneOf([Yup.ref("currentPassword")], "A nova senha não pode ser igual à senha atual!"),
     confirmNewPassword: Yup.string()
       .required("Confirme a nova senha!")
@@ -70,10 +71,18 @@ const Index = () => {
       })
       .catch((error) => {
         const status = error.response?.status;
+
         let errorMessage = "Ocorreu um erro inesperado. Tente novamente.";
 
         if (status === 400) {
-          errorMessage = "Dados inválidos. Verifique as senhas informadas.";
+          const msg = "Senha atual incorreta. Verifique e tente novamente.";
+
+          setError("currentPassword", {
+            type: "manual",
+            message: msg,
+          });
+
+          errorMessage = msg;
         } else if (status === 401) {
           errorMessage = "Não autorizado. Faça login novamente.";
         } else if (status === 404) {
@@ -89,6 +98,11 @@ const Index = () => {
           buttonText: "Tentar Novamente",
         });
       });
+  };
+
+  // Função para bloquear copiar, colar e recortar
+  const handlePreventCopyPaste = (e) => {
+    e.preventDefault();
   };
 
   return (
@@ -136,6 +150,11 @@ const Index = () => {
             error={!!errors.newPassword}
             helperText={errors.newPassword?.message}
             {...register("newPassword")}
+            htmlInputProps={{
+              onCopy: handlePreventCopyPaste,
+              onPaste: handlePreventCopyPaste,
+              onCut: handlePreventCopyPaste,
+            }}
           />
         </div>
 
@@ -152,6 +171,11 @@ const Index = () => {
             error={!!errors.confirmNewPassword}
             helperText={errors.confirmNewPassword?.message}
             {...register("confirmNewPassword")}
+            htmlInputProps={{
+              onCopy: handlePreventCopyPaste,
+              onPaste: handlePreventCopyPaste,
+              onCut: handlePreventCopyPaste,
+            }}
           />
         </div>
 
