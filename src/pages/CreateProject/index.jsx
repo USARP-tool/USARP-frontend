@@ -32,6 +32,7 @@ const CreateProject = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [pendingAction, setPendingAction] = useState(null);
 
+
   const [successMessage, setSuccessMessage] = useState("");
   const [showRemoveMemberConfirm, setShowRemoveMemberConfirm] = useState(false);
   const [removeMemberAction, setRemoveMemberAction] = useState(null);
@@ -131,10 +132,12 @@ const CreateProject = () => {
         await axios.put(`${config.baseUrl}/project/${id}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });setShowSuccessModal(true);
-            setTimeout(() => {
-              navigate("/projects");
-            }, 1200);
-        } else {
+
+          setSuccessMessage("Projeto atualizado com sucesso!");
+          setTimeout(() => {
+            navigate("/projects");
+          }, 1200);
+      }else {
           const createPayload = {
             projectName: data.projectName,
             description: data.description ?? "",
@@ -194,6 +197,22 @@ const CreateProject = () => {
         >
           {apiError}
         </div>
+      )}{successMessage && (
+          <div
+            style={{
+              padding: "1rem",
+              marginBottom: "1rem",
+              backgroundColor: "#dcfce7",
+              color: "#166534",
+              borderRadius: "8px",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            <CheckCircle size={18} />
+          {successMessage}
+          </div>
       )}
 
       <form onSubmit={handleSubmit(handleSubmitForm)} noValidate>
@@ -298,6 +317,8 @@ const CreateProject = () => {
                   onClick={() =>{
                     setRemoveMemberAction(() => () => remove(index));
                     setShowRemoveMemberConfirm(true);
+                    setPendingAction(() => () => remove(index));
+                    setShowConfirm(true);
                   }}
                   title="Remover membro"
                 >

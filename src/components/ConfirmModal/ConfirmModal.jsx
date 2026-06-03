@@ -13,8 +13,7 @@ export default function ConfirmModal({
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
-        
-        {/* ÍCONE */}
+        {/* ICON */}
         <div
           className={
             type === "warning"
@@ -29,12 +28,9 @@ export default function ConfirmModal({
           )}
         </div>
 
-        {/* TEXOS */}
+        {/* TEXTO */}
         <h2 className={styles.title}>{title}</h2>
-
-        <p className={styles.message}>
-          {message}
-        </p>
+        <p className={styles.message}>{message}</p>
 
         {/* BOTÕES */}
         <div className={styles.actions}>
