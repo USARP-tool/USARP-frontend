@@ -29,19 +29,13 @@ const CreateProject = () => {
 
   const [apiError, setApiError] = useState("");
   const [isLoadingData, setIsLoadingData] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [pendingAction, setPendingAction] = useState(null);
-
-
+  const [confirmConfig, setConfirmConfig] = useState(null);
+  const [initialValues, setInitialValues] = useState(null);
+  const [successType, setSuccessType] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [showRemoveMemberConfirm, setShowRemoveMemberConfirm] = useState(false);
-  const [removeMemberAction, setRemoveMemberAction] = useState(null);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-  
   const schema = useMemo(
     () =>
-      
       Yup.object().shape({
         projectName: Yup.string()
           .min(5, "O nome do projeto deve ter no mínimo 5 caracteres")
@@ -61,7 +55,7 @@ const CreateProject = () => {
     [isEditMode],
   );
 
-  const { control, formState, handleSubmit, reset } = useForm({
+  const { control, formState, handleSubmit, reset , watch } = useForm({
     mode: "onChange",
     resolver: yupResolver(schema),
     defaultValues: {
@@ -83,27 +77,38 @@ const CreateProject = () => {
     if (isEditMode && token) {
       const fetchProjectData = async () => {
         setIsLoadingData(true);
+
         try {
-          const response = await axios.get(`${config.baseUrl}/project/owned-projects`, {
-            headers: { Authorization: `Bearer ${token}` },
-            params: { id: id },
-          });
+          const response = await axios.get(
+            `${config.baseUrl}/project/owned-projects`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+              params: { id },
+            }
+          );
 
           const projects = response.data.projects || [];
-          if (projects.length > 0) {
-            const project = projects[0];
-            reset({
-              projectName: project.projectName,
-              description: project.description,
-              status: project.status,
-              projectTeam: project.projectTeam.map((member) => ({
-                email: member.email,
-                roleInProject: member.roleInProject || "",
-              })),
-            });
-          } else {
+
+          if (projects.length === 0) {
             setApiError("Projeto não encontrado ou você não tem permissão.");
+            return;
           }
+
+          const project = projects[0];
+
+          const formatted = {
+            projectName: project.projectName,
+            description: project.description,
+            status: project.status,
+            projectTeam: project.projectTeam.map((member) => ({
+              memberId: member.memberId,
+              email: member.email,
+              roleInProject: member.roleInProject || "",
+            })),
+          };
+
+          reset(formatted);
+          setInitialValues(formatted);
         } catch (error) {
           console.error("Erro ao buscar dados do projeto", error);
           setApiError("Erro ao carregar dados do projeto.");
@@ -129,15 +134,48 @@ const CreateProject = () => {
             roleInProject: member.roleInProject,
           })),
         };
+        console.log("PAYLOAD ENVIADO:", payload);
+
         await axios.put(`${config.baseUrl}/project/${id}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
-        });setShowSuccessModal(true);
+        });
+      
+        const current = data;
+        const initial = initialValues;
 
+        const statusChanged = current.status !== initial.status;
+
+        const teamChanged = current.projectTeam?.some((member, index) => {
+          const initialMember = initial.projectTeam?.[index];
+
+          return (
+            member.email !== initialMember?.email ||
+            member.roleInProject !== initialMember?.roleInProject
+          );
+        });
+
+      // MENSAGEM do modal
+        if (statusChanged) {
+          setSuccessType("status");
+          if (data.status === "Ativo") {
+            setSuccessMessage("Projeto ativado com sucesso!");
+          } else if (data.status === "Bloqueado") {
+            setSuccessMessage("Projeto bloqueado com sucesso!");
+          } else if (data.status === "Concluído/Encerrado") {
+            setSuccessMessage("Projeto encerrado com sucesso!");
+          } else {
+            setSuccessMessage("Status atualizado com sucesso!");
+          }
+        } 
+        else if (teamChanged) {
+          setSuccessType("team");
+          setSuccessMessage("Equipe do projeto atualizada com sucesso!");
+        } 
+        else {
+          setSuccessType("general")
           setSuccessMessage("Projeto atualizado com sucesso!");
-          setTimeout(() => {
-            navigate("/projects");
-          }, 1200);
-      }else {
+        }
+        } else {
           const createPayload = {
             projectName: data.projectName,
             description: data.description ?? "",
@@ -151,10 +189,9 @@ const CreateProject = () => {
             headers: { Authorization: `Bearer ${token}` },
         });setSuccessMessage("Projeto salvo com sucesso!");
       }
-      reset();
-      setTimeout(() => {
-        navigate("/projects");
-      }, 1200);
+      if (!isEditMode) {
+       reset();
+      }
     } catch (error) {
       console.error("Erro ao salvar projeto:", error);
       if (error.response) {
@@ -167,7 +204,21 @@ const CreateProject = () => {
       }
     }
   };
+  const handleDeleteMember = async (index, member) => {
+    try {
+      await axios.delete(
+        `${config.baseUrl}/project/${id}/removeMember/${member.memberId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
+      remove(index); // só remove do form depois que o backend confirmar
+    } catch (error) {
+      console.error("Erro ao deletar membro:", error);
+      setApiError("Erro ao remover membro do projeto.");
+    }
+  };
   if (isLoadingData) {
     return (
       <Container>
@@ -175,7 +226,7 @@ const CreateProject = () => {
       </Container>
     );
   }
-
+const watchedProjectTeam = watch("projectTeam");
   return (
     <Container>
       <div>
@@ -198,23 +249,17 @@ const CreateProject = () => {
           {apiError}
         </div>
       )}{successMessage && (
-          <div
-            style={{
-              padding: "1rem",
-              marginBottom: "1rem",
-              backgroundColor: "#dcfce7",
-              color: "#166534",
-              borderRadius: "8px",
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
+          <ConfirmModal
+            type="success"
+            title="Sucesso!"
+            message={successMessage}
+            onConfirm={() => {
+              setSuccessMessage("");
+              setSuccessType("");
+              navigate("/projects");
             }}
-          >
-            <CheckCircle size={18} />
-          {successMessage}
-          </div>
-      )}
-
+          />
+        )}
       <form onSubmit={handleSubmit(handleSubmitForm)} noValidate>
         <fieldset>
           <legend>Dados Gerais</legend>
@@ -315,12 +360,18 @@ const CreateProject = () => {
                   type="button"
                   className={styles.deleteButton}
                   onClick={() =>{
-                    setRemoveMemberAction(() => () => remove(index));
-                    setShowRemoveMemberConfirm(true);
-                    setPendingAction(() => () => remove(index));
-                    setShowConfirm(true);
+                    if (!isEditMode){
+                      remove(index);
+                      return;
+                    }
+              
+                    setConfirmConfig({
+                      title: "Remover membro",
+                      message: "Tem certeza que deseja remover este membro?",
+                      onConfirm: () =>
+                        handleDeleteMember(index, watchedProjectTeam[index]),
+                    });
                   }}
-                  title="Remover membro"
                 >
                   <Trash2 />
                 </button>
@@ -343,16 +394,18 @@ const CreateProject = () => {
 
           <div className={styles.actions}>
             <Button
-              type="reset"
+              type="button"
               variant="outlined"
               onClick={() => {
-                if(isDirty){
-                  setPendingAction(() => () => navigate("/projects"));
-                  setShowConfirm(true);
-                }else{
+                if (isDirty) {
+                  setConfirmConfig({
+                    title: "Tem certeza?",
+                    message: "Você tem alterações não salvas. Deseja realmente sair?",
+                    onConfirm: () => navigate("/projects"),
+                  });
+                } else {
                   navigate("/projects");
                 }
-              
               }}
               disabled={isSubmitting}
             >
@@ -364,45 +417,16 @@ const CreateProject = () => {
             </Button>
           </div>
         </div>
-      </form>{/* MODAL SAIR SEM SALVAR */}
-        {showConfirm && (
+      </form>
+       {confirmConfig && (
           <ConfirmModal
             type="warning"
-            title="Tem certeza?"
-            message="Você tem alterações não salvas. Deseja realmente sair?"
-            confirmText="Sair da página"
-            cancelText="Continuar editando"
-            onCancel={() => setShowConfirm(false)}
+            title={confirmConfig.title}
+            message={confirmConfig.message}
+            onCancel={() => setConfirmConfig(null)}
             onConfirm={() => {
-              setShowConfirm(false);
-              pendingAction?.();
-            }}
-          />
-        )}
-
-        {/* MODAL EXCLUIR MEMBRO */}
-        {showRemoveMemberConfirm && (
-          <ConfirmModal
-            type="warning"
-            title="Remover membro?"
-            message="Ao remover este membro, ele perderá acesso ao projeto e às informações relacionadas."
-            confirmText="Excluir membro"
-            cancelText="Cancelar"
-            onCancel={() => setShowRemoveMemberConfirm(false)}
-            onConfirm={() => {
-              setShowRemoveMemberConfirm(false);
-              removeMemberAction?.();
-            }}
-          />
-        )}
-        {showSuccessModal && (
-          <ConfirmModal
-            type="success"
-            title="Excelente!"
-            message="Projeto atualizado com sucesso! Você será redirecionado para a página de projetos."
-            onConfirm={() => {
-              setShowSuccessModal(false);
-              navigate("/projects");
+              confirmConfig.onConfirm?.();
+              setConfirmConfig(null);
             }}
           />
         )}
