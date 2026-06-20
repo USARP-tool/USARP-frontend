@@ -26,7 +26,7 @@ export default function ViewUserStories() {
   const [search, setSearch] = useState("");
   const [userStories, setUserStories] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [error, setError] = useState(""); 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] =
     useState(5);
@@ -76,11 +76,9 @@ export default function ViewUserStories() {
     });
 
       setUserStories(formattedUserStories);
-    } catch (error) {
-      console.error(
-        "Erro ao buscar histórias de usuário:",
-        error
-      );
+    } catch (error) { 
+      console.error(error);
+        setError("Erro ao buscar histórias de usuário");
     } finally {
       setIsLoading(false);
     }
@@ -91,9 +89,13 @@ export default function ViewUserStories() {
       fetchUserStories();
     }
   }, [projectId, token]);
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter, search, userStories]);
 
   function handleOpenStory(story) {
-    setSelectedStory(story);
+    setSelectedStory(null);
+    setTimeout(() => setSelectedStory(story), 0);
   }
 
   function handleCloseModal() {
@@ -118,53 +120,40 @@ export default function ViewUserStories() {
     );
   }, [userStories]);
   const filteredUserStories = useMemo(() => {
-  let filtered = [...orderedStories];
+    const matchesSearch = (us) =>
+      us.title.toLowerCase().includes(search.toLowerCase()) ||
+      String(us.number).includes(search);
 
-  const matchesSearch = (us) =>
-    us.title.toLowerCase().includes(search.toLowerCase()) ||
-    String(us.number).includes(search);
+    let filtered = [...orderedStories];
 
-      switch (filter) {
-        case "Favoritos":
-          filtered = filtered.filter(
-            (us) => us.isFavorite && matchesSearch(us)
-          );
-          break;
+    switch (filter) {
+      case "Favoritos":
+        filtered = filtered.filter((us) => us.isFavorite );
+      break;
 
-        case "Recentes":
-          filtered = filtered
-            .sort(
-              (a, b) =>
-                new Date(b.lastAccess) -
-                new Date(a.lastAccess)
-            )
-            .filter(matchesSearch);
-          break;
+      case "Recentes":
+        filtered = filtered.sort(
+          (a, b) => new Date(b.lastAccess) - new Date(a.lastAccess)
+        );
+        break;
 
-        case "Status":
-          filtered = filtered
-            .sort((a, b) =>
-              a.status.localeCompare(b.status)
-            )
-            .filter(matchesSearch);
-          break;
+      case "Status":
+        filtered = filtered.sort((a, b) =>
+          a.status.localeCompare(b.status)
+        );
+        break;
 
-        case "Data de criação":
-          filtered = filtered
-            .sort(
-              (a, b) =>
-                new Date(b.createdAt) -
-                new Date(a.createdAt)
-            )
-            .filter(matchesSearch);
-          break;
+      case "Data de criação":
+        filtered = filtered.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        break;
 
-        default:
-          filtered = filtered.filter(matchesSearch);
-      }
-
-      return filtered;
-    }, [filter, search, orderedStories]);
+      default:
+        break;
+    }
+      return filtered.filter(matchesSearch);
+  }, [filter, search, orderedStories]);
   const totalPages = Math.max(
     1,
     Math.ceil(

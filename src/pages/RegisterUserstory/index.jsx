@@ -399,7 +399,7 @@ const contentConnectionError = (
             onClick={handleSubmitForm}
           >
             <Button.Text>
-              {projectId ? "Salvar User Story" : "Cadastrar" }
+              {projectId ? "Salvar User Story" : "Cadrastrar" }
             </Button.Text>
           </Button.Root>
         </div>
