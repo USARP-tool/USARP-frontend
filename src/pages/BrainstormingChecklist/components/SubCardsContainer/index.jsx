@@ -19,40 +19,88 @@ export function SubCardsContainer({ selectedCardId }) {
           id: "R2",
           category: "Status do Sistema",
           description:
-            "Para cada user story que possa afetar o status do sistema, analise se a persona deseja que o sistema notifique sobre mudanças no status do sistema. Se sim, quais são?",
-          context: "Os status do sistema que devem ser relatados são X, XI, XII.",
-          type: "Requisitos",
-        },
-        {
-          id: "R3",
-          category: "Status do Sistema",
-          description:
-            "Para cada user story que possa afetar o status do sistema, analise se a persona deseja que o sistema notifique sobre mudanças no status do sistema. Se sim, quais são?",
-          context: "Os status do sistema que devem ser relatados são X, XI, XII.",
+            "Para cada user story que possa gerar falhas no sistema, analise se a persona deseja que o sistema notifique essas falhas. Se sim, quais são?",
+          context: "O sistema precisará fornecer feedback sobre as falhas I, II, III que ocorrem nessa user story.",
           type: "Requisitos",
         },
         {
           id: "P1",
           category: "Status do Sistema",
-          description: "Como o status do sistema deve ser visualizado na interface?",
-          context: "Crie um protótipo mostrando como o feedback de status será exibido ao usuário.",
+          description:
+            "Quais informações sobre status do sistema são críticas para persona e não podem passar despercebidas?",
+          context:
+            "Para as informações destacadas, sugere-se que essas informações sejam exibidas no formato invasivo na área principal, no qual impede a persona de continuar até que as informações destacadas sejam fechadas.",
+          type: "Prototipação",
+        },
+        {
+          id: "P2",
+          category: "Status do Sistema",
+          description:
+            "Quais informações sobre o status do sistema estão relacionadas a uma situação importante, mas não crítica?",
+          context:
+            "As informações relacionadas às falhas III, IV, etc, devem ser mostradas no formato destacado. Para essas informações, sugere-se que elas sejam destacadas, usando cores e sons ou movimentos diferentes, tamanhos, etc.",
+          type: "Prototipação",
+        },
+        {
+          id: "P3",
+          category: "Status do Sistema",
+          description: "Quais informações sobre o status do sistema será simplesmente exibida na área de status?",
+          context:
+            "Para as informações a serem mostradas na área de status, sugere-se que seja dado algum tipo de relevância na área de status do sistema.",
           type: "Prototipação",
         },
       ],
       M2: [
         {
-          id: "R2",
-          category: "Interação do Usuário",
-          description:
-            "Para cada interação do usuário, o sistema deve confirmar que a ação foi registrada. Como essa confirmação deve ser comunicada?",
-          context: "A confirmação deve ser clara e imediata, utilizando feedback visual e/ou auditivo.",
+          id: "R3",
+          category: "Interação",
+          description: "Para cada user story, analise como a persona poderá reconhecer o resultado de uma ação.",
+          context:
+            "O sistema responde a eventos de interação A, B e C. C tem alto significado. A resposta do sistema será feita em 0,1 milissegundos após a interação da persona. Em caso de sucesso, o sistema deve ..... em caso de insucesso, o sistema deve...",
           type: "Requisitos",
         },
         {
-          id: "P2",
-          category: "Interação do Usuário",
-          description: "Qual é a melhor forma de representar o feedback de interação?",
-          context: "Protótipo de componentes que confirmam as ações do usuário.",
+          id: "P4",
+          category: "Interação",
+          description: "Como o sistema deverá fornecer o feedback sobre o resultado de uma ação da persona?",
+          context: "Em caso de sucesso, o sistema deve exibir... Em caso de insucesso, o sistema deve exibir...",
+          type: "Prototipação",
+        },
+      ],
+      M3: [
+        {
+          id: "R4",
+          category: "Alerta",
+          description:
+            "Para cada user story cuja funcionalidade pode ter consequências importantes a persona, analise se é necessário emitir um alerta sobre estas consequências. Quais informações serão fornecidas sobre as consequências e alternativas para o usuário?",
+          context:
+            "O sistema exibirá um alerta sobre a consequência A e as alternativas B e C para a persona. Considere a frequência de tais ações e seus danos. Cuidado para não sobrecarregar a persona com alertas.",
+          type: "Requisitos",
+        },
+        {
+          id: "P5",
+          category: "Alerta",
+          description:
+            "Como os alertas serão apresentados para a persona? Como a persona pode confirmar ou seguir um caminho alternativo?",
+          context:
+            "As informações a serem mostradas no alerta serão R, S, T, respectivamente. Lembre-se de fornecer as consequências de cada ação e as alternativas para a persona.",
+          type: "Prototipação",
+        },
+      ],
+      M4: [
+        {
+          id: "R5",
+          category: "Feedback Sobre o Progresso",
+          description:
+            "Se a funcionalidade descrita na user story levará mais de 2 segundos para ser concluída, analise como a persona será informada sobre o andamento. Quais informações serão fornecidas?",
+          context: "O sistema informará sobre o andamento da operação por meio de ... com as informações R, S, T.",
+          type: "Requisitos",
+        },
+        {
+          id: "P6",
+          category: "Feedback Sobre o Progresso",
+          description: "Como a persona será informada quando o processo terminar?",
+          context: "Ao concluir o processo, será exibido..... com a informação R.",
           type: "Prototipação",
         },
       ],
