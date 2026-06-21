@@ -11,6 +11,7 @@ import useModal from "../../hooks/useModal";
 import Button from "../../components/ui/Button/Button";
 import Input from "../../components/ui/Input/Input";
 import Modal from "../../layouts/Modal/Modal";
+import PwStrengthLevel from "../../components/PwStrengthLevel/PwStrengthLevel";
 import { config } from "../../utils/config";
 
 import styles from "./styles.module.scss";
@@ -35,6 +36,7 @@ const Index = () => {
     newPassword: Yup.string()
       .required("A nova senha é obrigatória!")
       .min(6, "A nova senha deve ter pelo menos 6 caracteres!")
+      .max(15, "A nova senha deve ter no máximo 15 caracteres!")
       .notOneOf([Yup.ref("currentPassword")], "A nova senha não pode ser igual à senha atual!"),
     confirmNewPassword: Yup.string()
       .required("Confirme a nova senha!")
@@ -46,10 +48,13 @@ const Index = () => {
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm({
     mode: "onBlur",
     resolver: yupResolver(schema),
   });
+
+  const newPasswordValue = watch("newPassword", "");
 
   const onSubmit = (data) => {
     axios
@@ -66,10 +71,18 @@ const Index = () => {
       })
       .catch((error) => {
         const status = error.response?.status;
+
         let errorMessage = "Ocorreu um erro inesperado. Tente novamente.";
 
         if (status === 400) {
-          errorMessage = "Dados inválidos. Verifique as senhas informadas.";
+          const msg = "Senha atual incorreta. Verifique e tente novamente.";
+
+          setError("currentPassword", {
+            type: "manual",
+            message: msg,
+          });
+
+          errorMessage = msg;
         } else if (status === 401) {
           errorMessage = "Não autorizado. Faça login novamente.";
         } else if (status === 404) {
@@ -85,6 +98,11 @@ const Index = () => {
           buttonText: "Tentar Novamente",
         });
       });
+  };
+
+  // Função para bloquear copiar, colar e recortar
+  const handlePreventCopyPaste = (e) => {
+    e.preventDefault();
   };
 
   return (
@@ -132,7 +150,16 @@ const Index = () => {
             error={!!errors.newPassword}
             helperText={errors.newPassword?.message}
             {...register("newPassword")}
+            htmlInputProps={{
+              onCopy: handlePreventCopyPaste,
+              onPaste: handlePreventCopyPaste,
+              onCut: handlePreventCopyPaste,
+            }}
           />
+        </div>
+
+        <div className={styles.strengthWrapper}>
+          <PwStrengthLevel password={newPasswordValue} />
         </div>
 
         <div className={styles.inputGroup}>
@@ -144,16 +171,16 @@ const Index = () => {
             error={!!errors.confirmNewPassword}
             helperText={errors.confirmNewPassword?.message}
             {...register("confirmNewPassword")}
+            htmlInputProps={{
+              onCopy: handlePreventCopyPaste,
+              onPaste: handlePreventCopyPaste,
+              onCut: handlePreventCopyPaste,
+            }}
           />
         </div>
 
         <div className={styles.actionArea}>
-          <Button
-            variant="outlined"
-            fullWidth={false}
-            onClick={() => navigate(-1)}
-            sx={{ minWidth: "140px" }}
-          >
+          <Button variant="outlined" fullWidth={false} onClick={() => navigate(-1)} sx={{ minWidth: "140px" }}>
             Cancelar
           </Button>
           <Button type="submit" fullWidth={false} sx={{ minWidth: "140px" }}>
