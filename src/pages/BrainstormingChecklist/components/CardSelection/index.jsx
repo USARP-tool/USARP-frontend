@@ -3,7 +3,7 @@ import { Text } from "../../../../components/Text";
 import { Button } from "../../../../components/Button";
 import styles from "../../styles.module.scss";
 
-export function CardSelection({ checkedItems, accordionItems, onBackToChecklist }) {
+export function CardSelection({ checkedItems, accordionItems, onBackToChecklist, onSelectCard }) {
   const [selectedCard, setSelectedCard] = useState(null);
 
   // Get all cards that match the checked items
@@ -25,6 +25,7 @@ export function CardSelection({ checkedItems, accordionItems, onBackToChecklist 
 
   const handleCardSelect = (cardId) => {
     setSelectedCard(cardId);
+    onSelectCard(cardId);
   };
 
   const handleBack = () => {
@@ -54,8 +55,9 @@ export function CardSelection({ checkedItems, accordionItems, onBackToChecklist 
           </div>
         ))}
       </div>
+
       <Button.Root data-type="primary" className={styles.submit__checklist} onClick={handleBack}>
-        <Button.Text>Voltar</Button.Text>
+        <Button.Text>Voltar para Checklist</Button.Text>
       </Button.Root>
     </div>
   );

@@ -1,0 +1,68 @@
+.subcard__container {
+  border-radius: 0.5rem;
+  padding: 1rem;
+  border-left: 4px solid;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  &.subcard__requisitos {
+    border-left-color: #0066cc;
+    background-color: rgba(0, 102, 204, 0.05);
+  }
+
+  &.subcard__prototipação {
+    border-left-color: #ff8c42;
+    background-color: rgba(255, 140, 66, 0.05);
+  }
+
+  .subcard__header {
+    display: flex;
+    gap: 0.5rem;
+
+    .subcard__type {
+      font-weight: 600;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+
+      .subcard__requisitos & {
+        background-color: #0066cc;
+        color: white;
+      }
+
+      .subcard__prototipação & {
+        background-color: #ff8c42;
+        color: white;
+      }
+    }
+  }
+
+  .subcard__content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .subcard__section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .subcard__label {
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: var(--gray-700);
+        letter-spacing: 0.5px;
+      }
+
+      .subcard__text {
+        font-size: 0.875rem;
+        color: var(--gray-600);
+        line-height: 1.5;
+      }
+    }
+  }
+}

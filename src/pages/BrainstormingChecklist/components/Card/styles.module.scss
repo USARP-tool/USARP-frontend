@@ -15,7 +15,6 @@
   border: 1px solid var(--tertiary-500);
   box-shadow: 4px 4px 24px 0px #00000026;
 
-
   .card__header {
     width: 100%;
     background-color: var(--tertiary-500);
@@ -54,7 +53,6 @@
 
       .card__content__item__body {
         font-size: 12px;
-
       }
     }
   }
@@ -82,6 +80,38 @@
 
     .card__id {
       font-size: 14px;
+    }
+  }
+}
+
+.card__requisitos {
+  .card__container {
+    border-color: #0066cc;
+
+    .card__header {
+      background-color: #0066cc;
+    }
+
+    .card__footer {
+      .card__dot {
+        background-color: #0066cc;
+      }
+    }
+  }
+}
+
+.card__prototipação {
+  .card__container {
+    border-color: #ff8c42;
+
+    .card__header {
+      background-color: #ff8c42;
+    }
+
+    .card__footer {
+      .card__dot {
+        background-color: #ff8c42;
+      }
     }
   }
 }

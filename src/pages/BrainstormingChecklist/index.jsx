@@ -5,6 +5,7 @@ import Checklist from "./components/Checklist";
 import CardsContainer from "./components/CardsContainer";
 import { UserStorySlider } from "./components/UserStorySlider";
 import { CardSelection } from "./components/CardSelection";
+import { SubCardsContainer } from "./components/SubCardsContainer";
 
 export function BrainstormingChecklist() {
   const avatarMock = [
@@ -228,6 +229,8 @@ export function BrainstormingChecklist() {
 
   const [isFillingCards, setIsFillingCards] = useState(false);
 
+  const [selectedCardForFilling, setSelectedCardForFilling] = useState(null);
+
   const handleCheck = (id) => {
     setCheckedItems((prev) => {
       const isChecked = prev.includes(id);
@@ -255,6 +258,11 @@ export function BrainstormingChecklist() {
 
   const handleBackToChecklist = () => {
     setIsFillingCards(false);
+    setSelectedCardForFilling(null);
+  };
+
+  const handleSelectCardForFilling = (cardId) => {
+    setSelectedCardForFilling(cardId);
   };
   return (
     <div className={styles.brainstormingChecklist__container}>
@@ -262,11 +270,17 @@ export function BrainstormingChecklist() {
       <UserStorySlider userStory={{ title: "US001 - Cadastro de usuário no sistema" }} />
       <main className={styles.content}>
         {isFillingCards ? (
-          <CardSelection
-            checkedItems={checkedItems}
-            accordionItems={accordionItems}
-            onBackToChecklist={handleBackToChecklist}
-          />
+          <>
+            <CardSelection
+              checkedItems={checkedItems}
+              accordionItems={accordionItems}
+              onBackToChecklist={handleBackToChecklist}
+              onSelectCard={handleSelectCardForFilling}
+            />
+            <div className={styles.cardsContainer__wrapper}>
+              <SubCardsContainer selectedCardId={selectedCardForFilling} />
+            </div>
+          </>
         ) : (
           <>
             <Checklist
