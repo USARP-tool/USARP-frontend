@@ -1,0 +1,15 @@
+.us_header {
+  background-color: white;
+  border-bottom: 1px solid var(--gray-200);
+  width: 100%;
+  padding: 0.35rem 1.5rem;
+  min-height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+
+  .title {
+    font-size: 0.875rem;
+  }
+}

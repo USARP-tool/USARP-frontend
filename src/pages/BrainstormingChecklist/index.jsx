@@ -3,6 +3,8 @@ import { ChecklistHeader } from "./components/ChecklistHeader";
 import styles from "./styles.module.scss";
 import Checklist from "./components/Checklist";
 import CardsContainer from "./components/CardsContainer";
+import { UserStorySlider } from "./components/UserStorySlider";
+import { CardSelection } from "./components/CardSelection";
 
 export function BrainstormingChecklist() {
   const avatarMock = [
@@ -50,16 +52,13 @@ export function BrainstormingChecklist() {
               {
                 id: "M1",
                 category: "Status do sistema",
-                description:
-                  "Informar os usuários sobre o estado interno do sistema.",
-                context:
-                  "Quando ocorrer alguma mudança ou falha no sistema que é importante para o usuário.",
+                description: "Informar os usuários sobre o estado interno do sistema.",
+                context: "Quando ocorrer alguma mudança ou falha no sistema que é importante para o usuário.",
               },
               {
                 id: "M2",
                 category: "Interação",
-                description:
-                  "Informar os usuários que o sistema registro uma interação do usuário.",
+                description: "Informar os usuários que o sistema registro uma interação do usuário.",
                 context:
                   "Quando o usuário realiza um evento de interação, como clique do mouse, movimento do mouse, movimento da seta, pressionamento do teclado e etc, o sistema deve informar ao usuário que a interação foi aceita.",
               },
@@ -68,23 +67,19 @@ export function BrainstormingChecklist() {
                 category: "Feedback sobre o progresso",
                 description:
                   "Informar os usuários quando o sistema estiver processando uma ação que poderá levar algum tempo para completar.",
-                context:
-                  "Quando um processo demorado interrompe a interface do usuário por mais de dois segundos.",
+                context: "Quando um processo demorado interrompe a interface do usuário por mais de dois segundos.",
               },
             ],
           },
           {
             id: "G1.2",
-            caption:
-              "A funcionalidade tem consequências relevantes para a persona",
+            caption: "A funcionalidade tem consequências relevantes para a persona",
             cards: [
               {
                 id: "M3",
                 category: "Alerta",
-                description:
-                  "Informar os usuários sobre qualquer ação com consequências importantes",
-                context:
-                  "Quando uma ação que tem sérias consequências é exigida pelo usuário.",
+                description: "Informar os usuários sobre qualquer ação com consequências importantes",
+                context: "Quando uma ação que tem sérias consequências é exigida pelo usuário.",
               },
             ],
           },
@@ -101,8 +96,7 @@ export function BrainstormingChecklist() {
               {
                 id: "M13",
                 category: "Favoritos",
-                description:
-                  "Registrar partes do sistema e do conteúdo que são de interesse do usuário.",
+                description: "Registrar partes do sistema e do conteúdo que são de interesse do usuário.",
                 context:
                   "Em um sistema de software navegável, quando o sistema é possivelmente grande e complexo e permite que o usuário se mova livremente por ele de maneiras não diretamente suportadas pela estrutura do artefato.",
               },
@@ -115,16 +109,14 @@ export function BrainstormingChecklist() {
               {
                 id: "M11",
                 category: "Preferências",
-                description:
-                  "Registrar as opções do usuário no uso das funções do sistema.",
+                description: "Registrar as opções do usuário no uso das funções do sistema.",
                 context:
                   "Quando a aplicação é muito complexa e muitas de suas funções podem ser ajustadas à preferência do usuário e não se sabe o suficiente sobre as preferências do usuáriopara assumir padrões que se adequam a todos os usuários.",
               },
               {
                 id: "M12",
                 category: "Area de objetos pessoais",
-                description:
-                  "Registrar as opções do usuário no uso da interface do sistema.",
+                description: "Registrar as opções do usuário no uso da interface do sistema.",
                 context:
                   "Quando a interface do aplicativo é complexa e possui muitos ícones que podem ser organizados de maneiras diferentes.",
               },
@@ -133,8 +125,7 @@ export function BrainstormingChecklist() {
                 category: "Feedback sobre progresso",
                 description:
                   "Informar os usuários quando o sistema estiver processando uma ação que poderá levar algum tempo para completar.",
-                context:
-                  "Quando um processo demorado interrompe a interface do usuário por mais de dois segundos.",
+                context: "Quando um processo demorado interrompe a interface do usuário por mais de dois segundos.",
               },
             ],
           },
@@ -146,16 +137,13 @@ export function BrainstormingChecklist() {
         cardsGroup: [
           {
             id: "G3.1",
-            caption:
-              "A funcionalidade envolve diferentes páginas ou interfaces",
+            caption: "A funcionalidade envolve diferentes páginas ou interfaces",
             cards: [
               {
                 id: "M8",
                 category: "Voltar",
-                description:
-                  "Retornar a um determinado estado em uma sequência de execução de comandos",
-                context:
-                  "Quando existem aplicativos interativos com várias etapas.",
+                description: "Retornar a um determinado estado em uma sequência de execução de comandos",
+                context: "Quando existem aplicativos interativos com várias etapas.",
               },
             ],
           },
@@ -174,28 +162,24 @@ export function BrainstormingChecklist() {
                 id: "M6",
                 category: "Abortar operação",
                 description: "Cancelar a execução de toda a aplicação.",
-                context:
-                  "Quando o usuário precisa sair de um aplicativo ou comando rapidamente.",
+                context: "Quando o usuário precisa sair de um aplicativo ou comando rapidamente.",
               },
               {
                 id: "M7",
                 category: "Cancelar",
                 description: "Cancelar a execução de uma ação.",
-                context:
-                  "Quando o usuário precisa cancelar uma ação específica.",
+                context: "Quando o usuário precisa cancelar uma ação específica.",
               },
             ],
           },
           {
             id: "G3.3",
-            caption:
-              "A persona necessita de conteúdos de ajuda para utilizar a funcionalidade",
+            caption: "A persona necessita de conteúdos de ajuda para utilizar a funcionalidade",
             cards: [
               {
                 id: "M14",
                 category: "Ajuda multinível",
-                description:
-                  "Prover diferentes níveis de ajuda para diferentes usuários",
+                description: "Prover diferentes níveis de ajuda para diferentes usuários",
                 context:
                   "Quando o aplicativo a ser desenvolvido écomplexo e é provável que alguns usuários precisem de um sistema de ajuda completo, mas a maioria dos usuários não leva tempopara usá-lo; portanto, os desenvolvedores desejam oferecer suporte a usuários impacientes e/ou ocasionais.",
               },
@@ -214,17 +198,14 @@ export function BrainstormingChecklist() {
               {
                 id: "M9",
                 category: "Entrada de texto estruturada",
-                description:
-                  "Prevenir que os usuários cometam erros de entrada de dados",
-                context:
-                  "Quando o sistema pode aceitar apenas entradas do usuário em um formato muito específico.",
+                description: "Prevenir que os usuários cometam erros de entrada de dados",
+                context: "Quando o sistema pode aceitar apenas entradas do usuário em um formato muito específico.",
               },
             ],
           },
           {
             id: "G4.2",
-            caption:
-              "A funcionalidade requer diferentes passos com entrada de dados",
+            caption: "A funcionalidade requer diferentes passos com entrada de dados",
             cards: [
               {
                 id: "M10",
@@ -245,12 +226,12 @@ export function BrainstormingChecklist() {
 
   const [displayedCardsGroup, setDisplayedCardsGroup] = useState(null);
 
+  const [isFillingCards, setIsFillingCards] = useState(false);
+
   const handleCheck = (id) => {
     setCheckedItems((prev) => {
       const isChecked = prev.includes(id);
-      const newList = isChecked
-        ? prev.filter((itemId) => itemId !== id)
-        : [...prev, id];
+      const newList = isChecked ? prev.filter((itemId) => itemId !== id) : [...prev, id];
       return newList;
     });
   };
@@ -269,29 +250,38 @@ export function BrainstormingChecklist() {
   };
 
   const handleSubmitChecklist = () => {
-    console.log("Botão de preencher cartas");
+    setIsFillingCards(true);
+  };
+
+  const handleBackToChecklist = () => {
+    setIsFillingCards(false);
   };
   return (
     <div className={styles.brainstormingChecklist__container}>
-      <ChecklistHeader
-        avatarList={avatarList}
-        handleSignOutSession={handleSignOutSession}
-      />
+      <ChecklistHeader avatarList={avatarList} handleSignOutSession={handleSignOutSession} />
+      <UserStorySlider userStory={{ title: "US001 - Cadastro de usuário no sistema" }} />
       <main className={styles.content}>
-        <Checklist
-          accordionItems={accordionItems}
-          checkedItems={checkedItems}
-          handleCheck={handleCheck}
-          handleSubmitChecklist={handleSubmitChecklist}
-          onSelectedAccordionItem={onSelectedAccordionItem}
-        />
-        {
-          // TODO: Implementar lógica para exibir ícones
-        }
-        <CardsContainer
-          displayedCards={displayedCardsGroup}
-          checkedItems={checkedItems}
-        />
+        {isFillingCards ? (
+          <CardSelection
+            checkedItems={checkedItems}
+            accordionItems={accordionItems}
+            onBackToChecklist={handleBackToChecklist}
+          />
+        ) : (
+          <>
+            <Checklist
+              accordionItems={accordionItems}
+              checkedItems={checkedItems}
+              handleCheck={handleCheck}
+              handleSubmitChecklist={handleSubmitChecklist}
+              onSelectedAccordionItem={onSelectedAccordionItem}
+            />
+            {
+              // TODO: Implementar lógica para exibir ícones
+            }
+            <CardsContainer displayedCards={displayedCardsGroup} checkedItems={checkedItems} />
+          </>
+        )}
       </main>
     </div>
   );
