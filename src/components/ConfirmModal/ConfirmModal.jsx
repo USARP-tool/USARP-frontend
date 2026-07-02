@@ -1,65 +1,33 @@
 import styles from "./styles.module.scss";
 import { AlertTriangle, CheckCircle } from "lucide-react";
 
-export default function ConfirmModal({
-  type = "warning",
-  title,
-  message,
-  confirmText = "Continuar",
-  cancelText = "Cancelar",
-  onConfirm,
-  onCancel,
-}) {
+export default function ConfirmModal({ type = "warning", title, message, onConfirm, onCancel }) {
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
-        
-        {/* ÍCONE */}
-        <div
-          className={
-            type === "warning"
-              ? styles.iconWarning
-              : styles.iconSuccess
-          }
-        >
-          {type === "warning" ? (
-            <AlertTriangle size={42} strokeWidth={2.5} />
-          ) : (
-            <CheckCircle size={42} strokeWidth={2.5} />
-          )}
+        {/* ICON */}
+        <div className={type === "warning" ? styles.iconWarning : styles.iconSuccess}>
+          {type === "warning" ? <AlertTriangle size={50} /> : <CheckCircle size={50} />}
         </div>
 
-        {/* TEXOS */}
+        {/* TEXTO */}
         <h2 className={styles.title}>{title}</h2>
-
-        <p className={styles.message}>
-          {message}
-        </p>
+        <p className={styles.message}>{message}</p>
 
         {/* BOTÕES */}
         <div className={styles.actions}>
           {type === "warning" ? (
             <>
-              <button
-                className={styles.cancel}
-                onClick={onCancel}
-              >
-                {cancelText}
+              <button className={styles.cancel} onClick={onCancel}>
+                Cancelar
               </button>
-
-              <button
-                className={styles.confirm}
-                onClick={onConfirm}
-              >
-                {confirmText}
+              <button className={styles.confirm} onClick={onConfirm}>
+                Alterar status do projeto
               </button>
             </>
           ) : (
-            <button
-              className={styles.ok}
-              onClick={onConfirm}
-            >
-              Ok
+            <button className={styles.ok} onClick={onConfirm}>
+              Ok, fechar
             </button>
           )}
         </div>
