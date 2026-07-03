@@ -38,7 +38,7 @@ export const PASSWORD_STRENGTH = {
 export const PROJECT_STATUS = [
   { value: "Ativo", label: "Ativo" },
   { value: "Bloqueado", label: "Bloqueado" },
-  { value: "Encerrado", label: "Concluido/Encerrado" },
+  { value: "Concluído/Encerrado", label: "Concluído/Encerrado" },
 ];
 
 export const USERSTORY_TEMPLATE = {

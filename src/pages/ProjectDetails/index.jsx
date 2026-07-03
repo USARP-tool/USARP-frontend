@@ -40,6 +40,7 @@ const ProjectDetails = () => {
         });
 
         if (response.data?.projects?.length > 0) {
+          // Garante que a propriedade isFavorite inicie como false se não vier da API
           setProject({ ...response.data.projects[0], isFavorite: false });
         } else if (Array.isArray(response.data) && response.data.length > 0) {
           setProject({ ...response.data[0], isFavorite: false });
@@ -75,8 +76,11 @@ const ProjectDetails = () => {
     return icons[index % icons.length];
   };
 
+  // --- Funções de Ação ---
+
   const handleToggleFavorite = () => {
     setProject((prev) => ({ ...prev, isFavorite: !prev.isFavorite }));
+    // Nota: Se houver uma rota de API para salvar o favorito, você pode chamar o axios aqui futuramente.
   };
 
   const handleEdit = () => {
@@ -100,7 +104,7 @@ const ProjectDetails = () => {
       });
 
       alert("Projeto excluído com sucesso.");
-      navigate("/projects");
+      navigate("/projects"); // Redireciona de volta para a lista de projetos após excluir
     } catch (error) {
       console.error("Erro ao excluir projeto:", error);
 
@@ -124,6 +128,8 @@ const ProjectDetails = () => {
       setIsLoading(false);
     }
   };
+
+  // --- Renderização ---
 
   if (isLoading) {
     return (
@@ -150,6 +156,7 @@ const ProjectDetails = () => {
         </NavLink>
 
         <div className={styles.contentGrid}>
+          {/* Coluna Esquerda - Detalhes */}
           <div className={styles.mainCard}>
             <div className={styles.cardHeader}>
               <h3 className={styles.projectName}>{project.projectName}</h3>
@@ -283,6 +290,7 @@ const ProjectDetails = () => {
               <div className={styles.cardActions}>
                 <Button
                   variant="contained"
+                  onClick={() => navigate(`/userstories/${project.id}`)}
                   sx={{
                     background: "var(--secondary-600)",
                     borderRadius: "20px",
@@ -295,7 +303,7 @@ const ProjectDetails = () => {
                 </Button>
                 <Button
                   variant="outlined"
-                  onClick={() => navigate(`/registerUserstory/${project.id}`)}
+                  onClick={() => navigate(`/registerUserStory/${project.id}`)}
                   sx={{
                     borderColor: "var(--secondary-600)",
                     color: "var(--secondary-600)",
