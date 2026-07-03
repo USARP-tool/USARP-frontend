@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useParams } from "react-router-dom";
 import { ChecklistHeader } from "./components/ChecklistHeader";
 import styles from "./styles.module.scss";
 import Checklist from "./components/Checklist";
@@ -6,8 +7,144 @@ import CardsContainer from "./components/CardsContainer";
 import { UserStorySlider } from "./components/UserStorySlider";
 import { CardSelection } from "./components/CardSelection";
 import { SubCardsContainer } from "./components/SubCardsContainer";
+import { api } from "../../utils/api";
+import { useAuth } from "../../hooks/useAuth";
 
 export function BrainstormingChecklist() {
+  const { id: brainstormingId } = useParams();
+  const { token } = useAuth();
+  const [brainstorming, setBrainstorming] = useState(null);
+  const [userStories, setUserStories] = useState([]);
+  const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
+  const [storyStates, setStoryStates] = useState({});
+  const [selectedStoryKeyFromStorage, setSelectedStoryKeyFromStorage] = useState(null);
+  const [storageHydrated, setStorageHydrated] = useState(false);
+  const [checkedItems, setCheckedItems] = useState([]);
+  const [notesByCard, setNotesByCard] = useState({});
+  const [isFillingCards, setIsFillingCards] = useState(false);
+  const [selectedCardForFilling, setSelectedCardForFilling] = useState(null);
+  const [displayedCardsGroup, setDisplayedCardsGroup] = useState(null);
+
+  const storageKey = brainstormingId ? `brainstorming-session-${brainstormingId}` : null;
+
+  const getStoryKey = (story, index) => {
+    if (!story) return `story-${index}`;
+    return story.id ?? story.userStorieNumber ?? `story-${index}`;
+  };
+
+  const currentStoryKey = getStoryKey(userStories[currentStoryIndex], currentStoryIndex);
+
+  useEffect(() => {
+    async function fetchBrainstormingData() {
+      try {
+        const { data } = await api.get(`/brainstorming/${brainstormingId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setBrainstorming(data);
+        setUserStories(data.userStories || []);
+      } catch (error) {
+        console.error("Error fetching brainstorming data:", error);
+      }
+    }
+
+    if (token && brainstormingId) {
+      fetchBrainstormingData();
+    }
+  }, [token, brainstormingId]);
+
+  useEffect(() => {
+    if (!storageKey) return;
+
+    try {
+      const stored = localStorage.getItem(storageKey);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        const savedStoryStates = parsed.storyStates || {};
+        const savedSelectedStoryKey = parsed.selectedStoryKey || Object.keys(savedStoryStates)[0] || null;
+
+        setStoryStates(savedStoryStates);
+        setSelectedStoryKeyFromStorage(savedSelectedStoryKey);
+      }
+    } catch (error) {
+      console.error("Error loading brainstorming session state:", error);
+    } finally {
+      setStorageHydrated(true);
+    }
+  }, [storageKey]);
+
+  useEffect(() => {
+    if (!userStories.length) return;
+
+    if (selectedStoryKeyFromStorage) {
+      const foundIndex = userStories.findIndex(
+        (story, index) => String(getStoryKey(story, index)) === String(selectedStoryKeyFromStorage),
+      );
+      if (foundIndex >= 0) {
+        setCurrentStoryIndex(foundIndex);
+        return;
+      }
+    }
+
+    setCurrentStoryIndex(0);
+  }, [userStories, selectedStoryKeyFromStorage]);
+
+  useEffect(() => {
+    if (!currentStoryKey) return;
+
+    const storyState = storyStates[currentStoryKey] || {
+      checkedItems: [],
+      notesByCard: {},
+      isFillingCards: false,
+      selectedCardForFilling: null,
+      displayedCardsGroup: null,
+    };
+
+    setCheckedItems(storyState.checkedItems || []);
+    setNotesByCard(storyState.notesByCard || {});
+    setIsFillingCards(storyState.isFillingCards || false);
+    setSelectedCardForFilling(storyState.selectedCardForFilling || null);
+    setDisplayedCardsGroup(storyState.displayedCardsGroup || null);
+  }, [currentStoryKey, storyStates]);
+
+  const saveStoryState = useCallback(
+    (storyKey, nextState) => {
+      if (!storyKey) return;
+
+      setStoryStates((prev) => ({
+        ...prev,
+        [storyKey]: nextState,
+      }));
+    },
+    [setStoryStates],
+  );
+
+  useEffect(() => {
+    if (!storageKey || !storageHydrated) return;
+
+    const payload = {
+      selectedStoryKey: currentStoryKey,
+      storyStates,
+    };
+
+    localStorage.setItem(storageKey, JSON.stringify(payload));
+  }, [storageKey, currentStoryKey, storyStates, storageHydrated]);
+
+  const handleChangeStoryIndex = (newIndex) => {
+    if (currentStoryKey) {
+      saveStoryState(currentStoryKey, {
+        checkedItems,
+        notesByCard,
+        isFillingCards,
+        selectedCardForFilling,
+        displayedCardsGroup,
+      });
+    }
+
+    setCurrentStoryIndex(newIndex);
+  };
+
   const avatarMock = [
     {
       id: 1,
@@ -121,13 +258,6 @@ export function BrainstormingChecklist() {
                 context:
                   "Quando a interface do aplicativo é complexa e possui muitos ícones que podem ser organizados de maneiras diferentes.",
               },
-              {
-                id: "M4",
-                category: "Feedback sobre progresso",
-                description:
-                  "Informar os usuários quando o sistema estiver processando uma ação que poderá levar algum tempo para completar.",
-                context: "Quando um processo demorado interrompe a interface do usuário por mais de dois segundos.",
-              },
             ],
           },
         ],
@@ -223,29 +353,82 @@ export function BrainstormingChecklist() {
     ],
   };
 
-  const [checkedItems, setCheckedItems] = useState([]);
-
-  const [displayedCardsGroup, setDisplayedCardsGroup] = useState(null);
-
-  const [isFillingCards, setIsFillingCards] = useState(false);
-
-  const [selectedCardForFilling, setSelectedCardForFilling] = useState(null);
-
   const handleCheck = (id) => {
-    setCheckedItems((prev) => {
-      const isChecked = prev.includes(id);
-      const newList = isChecked ? prev.filter((itemId) => itemId !== id) : [...prev, id];
-      return newList;
-    });
+    const newCheckedItems = checkedItems.includes(id)
+      ? checkedItems.filter((itemId) => itemId !== id)
+      : [...checkedItems, id];
+    const nextState = {
+      checkedItems: newCheckedItems,
+      notesByCard,
+      isFillingCards,
+      selectedCardForFilling,
+      displayedCardsGroup,
+    };
+    setCheckedItems(newCheckedItems);
+    saveStoryState(currentStoryKey, nextState);
+  };
+
+  const handleUpdateNotes = (cardId, updatedPostits) => {
+    const nextNotes = {
+      ...notesByCard,
+      [cardId]: updatedPostits,
+    };
+    const nextState = {
+      checkedItems,
+      notesByCard: nextNotes,
+      isFillingCards,
+      selectedCardForFilling,
+      displayedCardsGroup,
+    };
+    setNotesByCard(nextNotes);
+    saveStoryState(currentStoryKey, nextState);
+  };
+
+  const handleAddNote = (cardId) => {
+    const nextNotes = {
+      ...notesByCard,
+      [cardId]: [...(notesByCard[cardId] || []), { id: Date.now(), text: "" }],
+    };
+    const nextState = {
+      checkedItems,
+      notesByCard: nextNotes,
+      isFillingCards,
+      selectedCardForFilling,
+      displayedCardsGroup,
+    };
+    setNotesByCard(nextNotes);
+    saveStoryState(currentStoryKey, nextState);
+  };
+
+  const handleDeleteNote = (cardId, noteId) => {
+    const nextNotes = {
+      ...notesByCard,
+      [cardId]: (notesByCard[cardId] || []).filter((note) => note.id !== noteId),
+    };
+    const nextState = {
+      checkedItems,
+      notesByCard: nextNotes,
+      isFillingCards,
+      selectedCardForFilling,
+      displayedCardsGroup,
+    };
+    setNotesByCard(nextNotes);
+    saveStoryState(currentStoryKey, nextState);
   };
 
   const onSelectedAccordionItem = (groupId) => {
     const group = accordionItems.groups.find((g) => g.id === groupId);
-    if (group) {
-      setDisplayedCardsGroup(group.cardsGroup);
-    } else {
-      setDisplayedCardsGroup(null);
-    }
+    const nextGroup = group ? group.cardsGroup : null;
+    const nextState = {
+      checkedItems,
+      notesByCard,
+      isFillingCards,
+      selectedCardForFilling,
+      displayedCardsGroup: nextGroup,
+    };
+
+    setDisplayedCardsGroup(nextGroup);
+    saveStoryState(currentStoryKey, nextState);
   };
 
   const handleSignOutSession = () => {
@@ -253,32 +436,80 @@ export function BrainstormingChecklist() {
   };
 
   const handleSubmitChecklist = () => {
+    const nextState = {
+      checkedItems,
+      notesByCard,
+      isFillingCards: true,
+      selectedCardForFilling,
+      displayedCardsGroup,
+    };
     setIsFillingCards(true);
+    saveStoryState(currentStoryKey, nextState);
   };
 
   const handleBackToChecklist = () => {
+    const nextState = {
+      checkedItems,
+      notesByCard,
+      isFillingCards: false,
+      selectedCardForFilling: null,
+      displayedCardsGroup,
+    };
     setIsFillingCards(false);
     setSelectedCardForFilling(null);
+    saveStoryState(currentStoryKey, nextState);
   };
 
   const handleSelectCardForFilling = (cardId) => {
+    const nextState = {
+      checkedItems,
+      notesByCard,
+      isFillingCards,
+      selectedCardForFilling: cardId,
+      displayedCardsGroup,
+    };
     setSelectedCardForFilling(cardId);
+    saveStoryState(currentStoryKey, nextState);
   };
   return (
     <div className={styles.brainstormingChecklist__container}>
-      <ChecklistHeader avatarList={avatarList} handleSignOutSession={handleSignOutSession} />
-      <UserStorySlider userStory={{ title: "US001 - Cadastro de usuário no sistema" }} />
+      <ChecklistHeader
+        avatarList={avatarList}
+        handleSignOutSession={handleSignOutSession}
+        brainstormingTitle={brainstorming?.brainstormingTitle || "Brainstorming"}
+      />
+      <UserStorySlider
+        userStories={userStories}
+        currentIndex={currentStoryIndex}
+        onChangeIndex={handleChangeStoryIndex}
+      />
       <main className={styles.content}>
         {isFillingCards ? (
           <>
             <CardSelection
               checkedItems={checkedItems}
+              selectedCardId={selectedCardForFilling}
               accordionItems={accordionItems}
               onBackToChecklist={handleBackToChecklist}
               onSelectCard={handleSelectCardForFilling}
             />
             <div className={styles.cardsContainer__wrapper}>
-              <SubCardsContainer selectedCardId={selectedCardForFilling} />
+              <SubCardsContainer
+                selectedCardId={selectedCardForFilling}
+                notesByCard={notesByCard}
+                onAddPostit={handleAddNote}
+                onUpdatePostit={(cardId, noteId, newText) => {
+                  if (!cardId) return;
+                  const updatedPostits = (notesByCard[cardId] || []).map((postit) =>
+                    postit.id === noteId ? { ...postit, text: newText } : postit,
+                  );
+                  handleUpdateNotes(cardId, updatedPostits);
+                }}
+                onDeletePostit={(cardId, noteId) => {
+                  if (!cardId) return;
+                  handleDeleteNote(cardId, noteId);
+                }}
+              />
             </div>
           </>
         ) : (

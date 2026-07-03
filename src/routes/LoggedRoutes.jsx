@@ -35,7 +35,7 @@ export function LoggedRoutes() {
         <Route path="editProject/:id" element={<CreateProject />} />
 
         <Route path="brainstorming" element={<ViewBrainstorming />} />
-        <Route path="brainstormingChecklist" element={<BrainstormingChecklist />} />
+        <Route path="brainstorming/:id" element={<BrainstormingChecklist />} />
 
         <Route path="registerUserstory" element={<CreateUserStory />} />
         <Route path="registerUserstory/:projectId" element={<CreateUserStory />} />

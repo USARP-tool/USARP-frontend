@@ -50,6 +50,11 @@ export function ViewBrainstorming() {
     setIsModalOpen(true);
   }
 
+  function handleViewBrainstorming(brainstorming) {
+    if (brainstorming.status !== "Novo") return;
+    navigate(`/brainstorming/${brainstorming.id}`);
+  }
+
   async function updateStatus() {
     try {
       await api.patch(
@@ -121,7 +126,7 @@ export function ViewBrainstorming() {
     Novo: {
       title: "Deseja iniciar este brainstorming?.",
       description: "Ao confirmar, o braisntorming ficará disponivel para edição e acompanhamento",
-      warning: "O braindtorming poderá ser alterado normalmente após a ativação",
+      warning: "O brainstorming poderá ser alterado normalmente após a ativação",
     },
     Bloqueado:{
       title: "Deseja bloquear este brainstorming?",
@@ -236,10 +241,12 @@ export function ViewBrainstorming() {
                   <td>{b.userStories?.length || 0}</td>
                   <td>
                     <div className={styles.table__buttons}>
-                      <span title="Visualizar"
-                          onClick={() => navigate(`/brainstorming/${b.id}`)}
+                      <span
+                        title={b.status !== "Novo" ? "Somente brainstorming Novo" : "Visualizar"}
+                        className={b.status !== "Novo" ? styles.disabledAction : ""}
+                        onClick={() => handleViewBrainstorming(b)}
                       >
-                      <IconChoice icon="eyeOn" />
+                        <IconChoice icon="eyeOn" />
                       </span>
 
                       <span title="Favoritar">
@@ -290,7 +297,6 @@ export function ViewBrainstorming() {
             onChange={(e) => setNewStatus(e.target.value)}
           >
             <option value="Novo">Novo</option>
-            <option value="Ativo">Ativo</option>
             <option value="Bloqueado">Bloqueado</option>
             <option value="Concluído/Encerrado">
               Concluído/Encerrado

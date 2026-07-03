@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Text } from "../../../../components/Text";
 import { Button } from "../../../../components/Button";
 import styles from "../../styles.module.scss";
 
-export function CardSelection({ checkedItems, accordionItems, onBackToChecklist, onSelectCard }) {
-  const [selectedCard, setSelectedCard] = useState(null);
+export function CardSelection({ checkedItems, selectedCardId, accordionItems, onBackToChecklist, onSelectCard }) {
+  const [selectedCard, setSelectedCard] = useState(selectedCardId || null);
+
+  useEffect(() => {
+    setSelectedCard(selectedCardId || null);
+  }, [selectedCardId]);
 
   // Get all cards that match the checked items
   const getSelectedCards = () => {
@@ -56,7 +60,11 @@ export function CardSelection({ checkedItems, accordionItems, onBackToChecklist,
         ))}
       </div>
 
-      <Button.Root data-type="primary" className={styles.submit__checklist} onClick={handleBack}>
+      <Button.Root
+        data-type="primary"
+        className={`${styles.submit__checklist} ${styles.backToChecklistButton}`}
+        onClick={handleBack}
+      >
         <Button.Text>Voltar para Checklist</Button.Text>
       </Button.Root>
     </div>
