@@ -1,0 +1,34 @@
+.us_header {
+  background-color: white;
+  border-bottom: 1px solid var(--gray-200);
+  width: 100%;
+  padding: 0.35rem 1.5rem;
+  min-height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+
+  .title {
+    font-size: 0.875rem;
+  }
+
+  .nav_button {
+    background: var(--primary-600);
+    border-radius: 100%;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: white;
+    padding: 0.25rem;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: var(--primary-700);
+    }
+  }
+}

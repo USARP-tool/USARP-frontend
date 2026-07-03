@@ -55,7 +55,7 @@ const CreateProject = () => {
     [isEditMode],
   );
 
-  const { control, formState, handleSubmit, reset , watch } = useForm({
+  const { control, formState, handleSubmit, reset, watch } = useForm({
     mode: "onChange",
     resolver: yupResolver(schema),
     defaultValues: {
@@ -79,13 +79,10 @@ const CreateProject = () => {
         setIsLoadingData(true);
 
         try {
-          const response = await axios.get(
-            `${config.baseUrl}/project/owned-projects`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-              params: { id },
-            }
-          );
+          const response = await axios.get(`${config.baseUrl}/project/owned-projects`, {
+            headers: { Authorization: `Bearer ${token}` },
+            params: { id },
+          });
 
           const projects = response.data.projects || [];
 
@@ -139,7 +136,7 @@ const CreateProject = () => {
         await axios.put(`${config.baseUrl}/project/${id}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
-      
+
         const current = data;
         const initial = initialValues;
 
@@ -148,13 +145,10 @@ const CreateProject = () => {
         const teamChanged = current.projectTeam?.some((member, index) => {
           const initialMember = initial.projectTeam?.[index];
 
-          return (
-            member.email !== initialMember?.email ||
-            member.roleInProject !== initialMember?.roleInProject
-          );
+          return member.email !== initialMember?.email || member.roleInProject !== initialMember?.roleInProject;
         });
 
-      // MENSAGEM do modal
+        // MENSAGEM do modal
         if (statusChanged) {
           setSuccessType("status");
           if (data.status === "Ativo") {
@@ -166,31 +160,30 @@ const CreateProject = () => {
           } else {
             setSuccessMessage("Status atualizado com sucesso!");
           }
-        } 
-        else if (teamChanged) {
+        } else if (teamChanged) {
           setSuccessType("team");
           setSuccessMessage("Equipe do projeto atualizada com sucesso!");
-        } 
-        else {
-          setSuccessType("general")
+        } else {
+          setSuccessType("general");
           setSuccessMessage("Projeto atualizado com sucesso!");
         }
-        } else {
-          const createPayload = {
-            projectName: data.projectName,
-            description: data.description ?? "",
-            projectTeam: (data.projectTeam ?? []).map((member) => ({
-              email: member.email,
-              roleInProject: member.roleInProject,
-            })),
-          };
+      } else {
+        const createPayload = {
+          projectName: data.projectName,
+          description: data.description ?? "",
+          projectTeam: (data.projectTeam ?? []).map((member) => ({
+            email: member.email,
+            roleInProject: member.roleInProject,
+          })),
+        };
 
-          await axios.post(`${config.baseUrl}/project/create`, createPayload, {
-            headers: { Authorization: `Bearer ${token}` },
-        });setSuccessMessage("Projeto salvo com sucesso!");
+        await axios.post(`${config.baseUrl}/project/create`, createPayload, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setSuccessMessage("Projeto salvo com sucesso!");
       }
       if (!isEditMode) {
-       reset();
+        reset();
       }
     } catch (error) {
       console.error("Erro ao salvar projeto:", error);
@@ -206,12 +199,9 @@ const CreateProject = () => {
   };
   const handleDeleteMember = async (index, member) => {
     try {
-      await axios.delete(
-        `${config.baseUrl}/project/${id}/removeMember/${member.memberId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      await axios.delete(`${config.baseUrl}/project/${id}/removeMember/${member.memberId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       remove(index); // só remove do form depois que o backend confirmar
     } catch (error) {
@@ -226,7 +216,7 @@ const CreateProject = () => {
       </Container>
     );
   }
-const watchedProjectTeam = watch("projectTeam");
+  const watchedProjectTeam = watch("projectTeam");
   return (
     <Container>
       <div>
@@ -248,18 +238,19 @@ const watchedProjectTeam = watch("projectTeam");
         >
           {apiError}
         </div>
-      )}{successMessage && (
-          <ConfirmModal
-            type="success"
-            title="Sucesso!"
-            message={successMessage}
-            onConfirm={() => {
-              setSuccessMessage("");
-              setSuccessType("");
-              navigate("/projects");
-            }}
-          />
-        )}
+      )}
+      {successMessage && (
+        <ConfirmModal
+          type="success"
+          title="Sucesso!"
+          message={successMessage}
+          onConfirm={() => {
+            setSuccessMessage("");
+            setSuccessType("");
+            navigate("/projects");
+          }}
+        />
+      )}
       <form onSubmit={handleSubmit(handleSubmitForm)} noValidate>
         <fieldset>
           <legend>Dados Gerais</legend>
@@ -359,17 +350,16 @@ const watchedProjectTeam = watch("projectTeam");
                 <button
                   type="button"
                   className={styles.deleteButton}
-                  onClick={() =>{
-                    if (!isEditMode){
+                  onClick={() => {
+                    if (!isEditMode) {
                       remove(index);
                       return;
                     }
-              
+
                     setConfirmConfig({
                       title: "Remover membro",
                       message: "Tem certeza que deseja remover este membro?",
-                      onConfirm: () =>
-                        handleDeleteMember(index, watchedProjectTeam[index]),
+                      onConfirm: () => handleDeleteMember(index, watchedProjectTeam[index]),
                     });
                   }}
                 >
@@ -418,18 +408,18 @@ const watchedProjectTeam = watch("projectTeam");
           </div>
         </div>
       </form>
-       {confirmConfig && (
-          <ConfirmModal
-            type="warning"
-            title={confirmConfig.title}
-            message={confirmConfig.message}
-            onCancel={() => setConfirmConfig(null)}
-            onConfirm={() => {
-              confirmConfig.onConfirm?.();
-              setConfirmConfig(null);
-            }}
-          />
-        )}
+      {confirmConfig && (
+        <ConfirmModal
+          type="warning"
+          title={confirmConfig.title}
+          message={confirmConfig.message}
+          onCancel={() => setConfirmConfig(null)}
+          onConfirm={() => {
+            confirmConfig.onConfirm?.();
+            setConfirmConfig(null);
+          }}
+        />
+      )}
     </Container>
   );
 };

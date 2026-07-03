@@ -1,6 +1,6 @@
 import logo from "./logo.svg";
 import logo2 from "./logo2.svg";
-import logo3 from "./logo2.svg";
+import logo3 from "./logo3.svg";
 
 import background from "./background.png";
 import notFound from "./not_found.png";
@@ -23,5 +23,4 @@ export const images = {
   logo,
   logo2,
   logo3,
-
 };

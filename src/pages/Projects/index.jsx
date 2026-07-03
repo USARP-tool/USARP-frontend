@@ -79,7 +79,7 @@ const Projects = () => {
 
   const handleToggleFavorite = (id) => {
     setProjects((prevProjects) =>
-      prevProjects.map((project) => (project.id === id ? { ...project, isFavorite: !project.isFavorite } : project))
+      prevProjects.map((project) => (project.id === id ? { ...project, isFavorite: !project.isFavorite } : project)),
     );
   };
 
@@ -89,7 +89,7 @@ const Projects = () => {
 
   const handleDeleteProject = async (id) => {
     const confirmDelete = window.confirm(
-      "Tem certeza que deseja excluir este projeto? Essa ação não pode ser desfeita."
+      "Tem certeza que deseja excluir este projeto? Essa ação não pode ser desfeita.",
     );
 
     if (!confirmDelete) return;
@@ -148,7 +148,7 @@ const Projects = () => {
 
   return (
     <Container>
-      <header>
+      <header className={styles.project_header}>
         <h2>Projetos</h2>
         <div>
           <Input

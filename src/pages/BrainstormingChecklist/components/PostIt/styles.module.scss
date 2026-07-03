@@ -1,0 +1,113 @@
+.postit__container {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  min-width: 150px;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  font-size: 0.875rem;
+
+  &.postit__requisitos {
+    background-color: #e6f2ff;
+    border: 1px solid #b3d9ff;
+  }
+
+  &.postit__prototipação {
+    background-color: #ffe6cc;
+    border: 1px solid #ffd4a3;
+  }
+
+  .postit__view {
+    cursor: pointer;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    p {
+      margin: 0;
+      flex: 1;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      line-height: 1.4;
+      color: var(--gray-700);
+    }
+
+    .postit__btn_delete {
+      align-self: flex-end;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--gray-600);
+      padding: 0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover {
+        color: var(--danger-600);
+      }
+    }
+  }
+
+  .postit__edit {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    height: 100%;
+
+    .postit__textarea {
+      flex: 1;
+      padding: 0.5rem;
+      border: 1px solid var(--gray-400);
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+      font-family: inherit;
+      resize: none;
+      font-size: 0.875rem;
+
+      &:focus {
+        outline: none;
+        border-color: var(--primary-600);
+      }
+    }
+
+    .postit__actions {
+      display: flex;
+      gap: 0.5rem;
+
+      button {
+        flex: 1;
+        padding: 0.5rem;
+        border: none;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .postit__btn_save {
+        background-color: var(--primary-600);
+        color: white;
+
+        &:hover {
+          background-color: var(--primary-700);
+        }
+      }
+
+      .postit__btn_cancel {
+        background-color: var(--gray-300);
+        color: var(--gray-700);
+
+        &:hover {
+          background-color: var(--gray-400);
+        }
+      }
+    }
+  }
+}

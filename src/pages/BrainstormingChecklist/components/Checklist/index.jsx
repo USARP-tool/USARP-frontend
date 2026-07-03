@@ -10,7 +10,7 @@ export default function Checklist({
   checkedItems,
   handleCheck,
   onSelectedAccordionItem,
-  handleSubmitChecklist
+  handleSubmitChecklist,
 }) {
   return (
     <div className={styles.checklist__container}>
@@ -25,9 +25,7 @@ export default function Checklist({
               <div className={styles.checklist__accordion}>
                 {group.cardsGroup.map((cardGroup) => (
                   <CheckboxGroup.Root key={cardGroup.id}>
-                    <CheckboxGroup.Caption>
-                      {cardGroup.caption}
-                    </CheckboxGroup.Caption>
+                    <CheckboxGroup.Caption>{cardGroup.caption}</CheckboxGroup.Caption>
                     {cardGroup.cards.map((card) => (
                       <Checkbox.Root
                         key={card.id}
@@ -46,9 +44,9 @@ export default function Checklist({
           </Accordion.Item>
         ))}
       </Accordion.Root>
-      <Button.Root data-type="primary">
+      <Button.Root data-type="primary" onClick={handleSubmitChecklist}>
         <div className={styles.submit__checklist}>
-          <Button.Text>Preencher Cartas</Button.Text>
+          <Button.Text>Preenchimento das cartas</Button.Text>
           <Button.Icon iconName={"arrowRightShort"} />
         </div>
       </Button.Root>

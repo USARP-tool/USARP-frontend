@@ -13,14 +13,7 @@ export default function ConfirmModal({
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
-
-        <div
-          className={
-            type === "warning"
-              ? styles.iconWarning
-              : styles.iconSuccess
-          }
-        >
+        <div className={type === "warning" ? styles.iconWarning : styles.iconSuccess}>
           {type === "warning" ? (
             <AlertTriangle size={42} strokeWidth={2.5} />
           ) : (
@@ -32,28 +25,16 @@ export default function ConfirmModal({
         <p className={styles.message}>{message}</p>
 
         <div className={styles.actions}>
-
           {/* sempre ter cancel se warning */}
           {type === "warning" && (
-            <button
-              className={styles.cancel}
-              onClick={onCancel}
-            >
+            <button className={styles.cancel} onClick={onCancel}>
               {cancelText}
             </button>
           )}
 
-          <button
-            className={
-              type === "warning"
-                ? styles.confirm
-                : styles.ok
-            }
-            onClick={onConfirm}
-          >
+          <button className={type === "warning" ? styles.confirm : styles.ok} onClick={onConfirm}>
             {type === "warning" ? confirmText : "Ok"}
           </button>
-
         </div>
       </div>
     </div>

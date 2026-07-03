@@ -1,10 +1,15 @@
 .brainstormingChecklist__container {
   background-color: var(--gray-100);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
 
   .header {
     background-color: var(--primary-600);
     width: 100%;
-    padding: 0.75rem 1.5rem 0.75rem 1.5rem;
+    padding: 0.35rem 1.5rem;
+    min-height: 80px;
 
     display: flex;
     justify-content: space-between;
@@ -16,11 +21,11 @@
       align-items: center;
 
       .smallLogo {
-        width: 70px;
+        width: 60px;
       }
 
       .title__container {
-        >div:first-child {
+        > div:first-child {
           display: flex;
           flex-direction: column;
           gap: 0.25rem;
@@ -56,7 +61,6 @@
           box-shadow: 2.5px 0px 0px 0px var(--secondary-500);
 
           margin-left: -5px;
-          object-fit: cover;
 
           .avatar__icon {
             width: 32px;
@@ -69,21 +73,19 @@
 
   .button__outline {
     font-family: Inter;
-    font-size: 1rem;
+    font-size: 0.75rem;
     font-weight: 600;
     text-align: center;
     display: flex;
 
-
     cursor: pointer;
-    padding: 1rem 1.5rem;
+    padding: 0.5rem 0.75rem;
     color: var(--th-button-primary-color);
     background: none;
     border-radius: 1rem;
     border: 0.06rem solid var(--th-button-primary-color);
 
     svg {
-      margin: 0 0.5rem;
       fill: var(--th-button-secondary-svg);
     }
 
@@ -110,7 +112,9 @@
   .content {
     display: flex;
     gap: 2rem;
-    padding: 1.5rem;
+    padding: 0 0 0 1.5rem;
+    flex: 1;
+    overflow: hidden;
 
     .checklist__container {
       display: flex;
@@ -121,10 +125,13 @@
       background-color: var(--white);
       border: 1px solid var(--gray-100);
       border-radius: 1rem;
-      box-shadow: 4px 4px 24px 0px rgba(0, 0, 0, .05);
+      box-shadow: 4px 4px 24px 0px rgba(0, 0, 0, 0.05);
 
       min-width: 375px;
-      max-width: 375px;
+      width: 375px;
+      height: fit-content;
+      position: sticky;
+      top: 1.5rem;
 
       h6 {
         font-weight: 600;
@@ -138,14 +145,106 @@
 
         gap: 2rem;
       }
-      .submit__checklist{
+      .submit__checklist {
         display: flex;
         justify-content: center;
         align-items: center;
         width: 100%;
       }
+
+      .card__selection {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        .card__option {
+          display: flex;
+          align-items: flex-start;
+          gap: 1rem;
+          padding: 1rem;
+          border: 1px solid var(--gray-200);
+          border-radius: 0.5rem;
+          cursor: pointer;
+          transition: all 0.2s ease;
+
+          &:hover {
+            border-color: var(--primary-400);
+            background-color: var(--gray-50);
+          }
+
+          input[type="radio"] {
+            margin-top: 0.25rem;
+            cursor: pointer;
+            accent-color: var(--primary-600);
+          }
+
+          .card__label {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            cursor: pointer;
+            flex: 1;
+
+            .card__category {
+              font-weight: 600;
+              font-size: 0.875rem;
+              color: var(--gray-700);
+            }
+
+            .card__description {
+              font-size: 0.75rem;
+              color: var(--gray-600);
+              line-height: 1.4;
+            }
+          }
+        }
+      }
+
+      .subcards__container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--gray-200);
+
+        h6 {
+          font-weight: 600;
+          font-size: 1.125rem;
+          color: var(--gray-700);
+        }
+
+        .subcards__list {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+        }
+      }
     }
 
+    .cardsContainer__wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      flex: 1;
+      height: 100%;
+      overflow-y: auto;
 
+      &::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: var(--gray-400);
+        border-radius: 4px;
+
+        &:hover {
+          background: var(--gray-500);
+        }
+      }
+    }
   }
 }

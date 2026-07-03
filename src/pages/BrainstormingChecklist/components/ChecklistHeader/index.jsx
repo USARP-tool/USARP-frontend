@@ -8,7 +8,7 @@ export function ChecklistHeader({ avatarList, handleSignOutSession }) {
   return (
     <header className={styles.header}>
       <div className={styles.brainstorming__header__info__container}>
-        <img src={images.pixelLogo} alt="Usarp Logo" className={styles.smallLogo} />
+        <img src={images.logo3} alt="Usarp Logo" className={styles.smallLogo} />
         <div className={styles.title__container}>
           <Text.Root>
             <Text.Headline as="h6">Brainstorming 1</Text.Headline>

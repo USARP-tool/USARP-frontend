@@ -6,7 +6,6 @@ import ProfileLayout from "../layouts/Profile/ProfileLayout";
 import Home from "../pages/Home";
 import Profile from "../pages/Profile";
 import Privacity from "../pages/Privacity";
-import ViewUserStories from "../pages/ViewUserStories";
 
 import { ViewBrainstorming } from "../pages/ViewBrainstorming";
 import Project from "../pages/Projects";
@@ -21,6 +20,7 @@ import { RegisterBrainstorming } from "../pages/RegisterBrainstorming";
 
 import { BrainstormingChecklist } from "../pages/BrainstormingChecklist";
 import { OrdemUserstory } from "../pages/OrdemUserstory";
+import ViewUserStories from "../pages/ViewUserStories";
 
 export function LoggedRoutes() {
   return (

@@ -242,21 +242,22 @@
     transform: scale(1);
     opacity: 1;
   }
-}.memberCard {
+}
+.memberCard {
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 14px;
   border-radius: 12px;
   background: #ffffff;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   margin-bottom: 12px;
   transition: 0.2s;
 }
 
 .memberCard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
 }
 
 .avatar {
