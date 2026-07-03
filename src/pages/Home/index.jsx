@@ -25,14 +25,11 @@ const Home = () => {
     if (!user?.id || !token) return;
 
     try {
-      const response = await axios.get(
-        `${config.baseUrl}/project/owned-projects`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`${config.baseUrl}/project/owned-projects`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const projects = response.data.projects || [];
       setHasProject(projects.length > 0);
@@ -147,7 +144,7 @@ const Home = () => {
         </div>
       </div>
 
-      <div className={styles.brainstormingGroup}>
+      {/* <div className={styles.brainstormingGroup}>
         <p>Recentes</p>
 
         <div className={styles.gridContainer}>
@@ -186,7 +183,7 @@ const Home = () => {
             </p>
           )}
         </div>
-      </div>
+      </div> */}
     </Container>
   );
 };
