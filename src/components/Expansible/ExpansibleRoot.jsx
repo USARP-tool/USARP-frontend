@@ -2,7 +2,14 @@ import { useState } from "react";
 import { IconChoice } from "../../utils/IconChoice";
 import styles from "./styles.module.scss";
 import PropTypes from "prop-types";
-export default function ExpansibleRoot({ children, usNumber, close, ...rest }) {
+
+export default function ExpansibleRoot({ 
+  children, 
+  usNumber, 
+  close, 
+  ...rest 
+}) 
+{
   const [expanded, setExpanded] = useState(false);
 
   const toggleExpanded = () => {

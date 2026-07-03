@@ -1,115 +1,323 @@
+import { useEffect, useState } from "react";
 import { Input } from "../../components/Input/indes";
 import { IconChoice } from "../../utils/IconChoice";
+import { api } from "../../utils/api";
+import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { Modal } from "../../components/Modal";
+import { Check, MoveLeft, AlertTriangle } from "lucide-react";
+
 import styles from "./styles.module.scss";
+import Container from "../../layouts/Container/Container";
 
 export function ViewBrainstorming() {
-  function getCurrentDateFormatted() {
-    const today = new Date();
+  const [brainstormings, setBrainstormings] = useState([]);
+  const [filteredBrainstormings, setFilteredBrainstormings] = useState([]);
 
-    const day = String(today.getDate()).padStart(2, "0");
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const year = today.getFullYear();
+  const { token, user } = useAuth();
+  const isModerador = user?.role === "Moderador";
+  const navigate = useNavigate();
 
-    return `${day}/${month}/${year}`;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBrainstorming, setSelectedBrainstorming] = useState(null);
+  const [newStatus, setNewStatus] = useState("");
+
+  useEffect(() => {
+    async function fetchBrainstormings() {
+      try {
+        const { data } = await api.get(
+          `/brainstorming/getAllUserBrainstormingsGrid/${user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setBrainstormings(data.brainstormings || []);
+        setFilteredBrainstormings(data.brainstormings || []);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    if (token) fetchBrainstormings();
+  }, [token]);
+
+  function handleEditStatus(brainstorming) {
+    setSelectedBrainstorming(brainstorming);
+    setNewStatus(brainstorming.status);
+    setIsModalOpen(true);
   }
+
+  async function updateStatus() {
+    try {
+      await api.patch(
+        `/brainstorming/${selectedBrainstorming.id}/status`,
+        { status: newStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setBrainstormings((prev) =>
+        prev.map((b) =>
+          b.id === selectedBrainstorming.id
+            ? { ...b, status: newStatus }
+            : b
+        )
+      );
+
+      setFilteredBrainstormings((prev) =>
+        prev.map((b) =>
+          b.id === selectedBrainstorming.id
+            ? { ...b, status: newStatus }
+            : b
+        )
+      );
+
+      setIsModalOpen(false);
+      alert("Status atualizado com sucesso");
+    } catch (error) {
+      console.log(error);
+      alert("Erro ao atualizar status");
+    }
+  }
+
+  function filterByStatus(status) {
+    if (status === "Todos") {
+      setFilteredBrainstormings(brainstormings);
+      return;
+    }
+
+    setFilteredBrainstormings(
+      brainstormings.filter((b) => b.status === status)
+    );
+  }
+
+  function sortByDate(type) {
+    const sorted = [...brainstormings].sort((a, b) => {
+      if (type === "recentes") {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      }
+      return new Date(a.createdAt) - new Date(b.createdAt);
+    });
+
+    setFilteredBrainstormings(sorted);
+  }
+
+  function getCurrentDateFormatted(date) {
+    return new Date(date).toLocaleDateString("pt-BR");
+  }
+
+  const modalMessages = {
+    Ativo: {
+      title: "Deseja ativar este brainstorming?",
+      description: "Ao ativar, a sessão permitirá edições e vínculos de histórias de usuários.",
+      warning: "Usuários poderão adicionar e editar user stories nesta sessão.",
+    },
+    Novo: {
+      title: "Deseja iniciar este brainstorming?.",
+      description: "Ao confirmar, o braisntorming ficará disponivel para edição e acompanhamento",
+      warning: "O braindtorming poderá ser alterado normalmente após a ativação",
+    },
+    Bloqueado:{
+      title: "Deseja bloquear este brainstorming?",
+      description: "Ao confirmar, algumas ações poderão ficar indiponivel durante o bloqueio, ",
+      warning: "Usuários poderão perder acesso a determinadas funcionalidades temorariamente",
+    },
+    "Concluído/Encerrado": {
+      title: "Deseja concluir este brainstoring?",
+      description: "Após concluir o brainstorming, a sessão será considerada finalizada.",
+      warning: "Após o encerramento, não será possível editar informações desta sessão",
+    },
+  };
+  const currentMessage =
+    modalMessages[newStatus] ||
+    modalMessages["Novo"];
+
+    
   return (
-    <div className={styles.viewBrainstorming__container}>
-      <header>
-        <span title="voltar">
-          <h4>Brainstorming</h4>
-        </span>
-        <Input.Root
-          style={{ width: "30%" }}
-          placeholder="Pesquisar projeto"
-          type="search"
-        />
-      </header>
-      <div className={styles.viewBrainstorming__content}>
-        <div className={styles.viewBrainstorming__filter}>
-         {/*} <Dropdown.Root default={true}>
-            <Dropdown.Trigger title="Todos" />
-            {* <Dropdown.Menu>
-                <Dropdown.Item value="todos">All</Dropdown.Item>
-              </Dropdown.Menu> *}
-          </Dropdown.Root>
-          <Dropdown.Root>
-            <Dropdown.Trigger title="Recentes" />
-            <Dropdown.Menu>
-              <Dropdown.Item value="Vistos recentemente">
-                Vistos recentemente
-              </Dropdown.Item>
-              <Dropdown.Item value="Não vistos nos últimos 30 dias">
-                Não vistos nos últimos 30 dias
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown.Root>
-          <Dropdown.Root>
-            <Dropdown.Trigger title="Favoritos" />
-            <Dropdown.Menu>
-              <Dropdown.Item value="Ordem alfabética (A-Z)">
-                Ordem alfabética (A-Z)
-              </Dropdown.Item>
-              <Dropdown.Item value="Ordem alfabética (Z-A)">
-                Ordem alfabética (Z-A)
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown.Root>
-          <Dropdown.Root>
-            <Dropdown.Trigger title="Data de criação" />
-            <Dropdown.Menu>
-              <Dropdown.Item value="Criados recentemente">
-                Criados recentemente
-              </Dropdown.Item>
-              <Dropdown.Item value="Mais antigos">Mais antigos</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown.Root> */}
+    <Container>
+        <header className={styles.header}>
+          <div className={styles.headerTitle}>
+            <span 
+              title="Voltar"
+              onClick={()=> navigate(-1)}
+              className={styles.backButton}
+            >
+              <MoveLeft size={24} />
+            </span>
+
+            <h2>Brainstorming</h2>
+          </div>
+        <div className={styles.headerActions}>
+          <Input.Root
+            style={{ width: "30%" }}
+            placeholder="Pesquisar brainstorming"
+            type="search"
+          />
         </div>
-        <div className={styles.viewBrainstorming__table}>
-          <table>
-            <thead>
-              <tr>
-                <th>NOME</th>
-                <th>CRIADO POR</th>
-                <th>DATA DE CRIAÇÃO</th>
-                <th>STATUS</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Projeto 1</td>
-                <td>
-                  <div className={styles.table__users}>
-                    <IconChoice icon="develop" />
-                    <span>Erik Beran</span>
-                  </div>
-                </td>
-                <td>
-                  <span>{getCurrentDateFormatted()}</span>
-                </td>
-                <td>
-                  <div className={styles.table__status}>
-                    <span>Novo</span>
-                  </div>
-                </td>
-                <td>
-                  <div className={styles.table__buttons}>
-                    <span title="Favoritar">
-                      <IconChoice icon="star" />
-                    </span>
-                    <span title="Editar">
-                      <IconChoice icon="edit" />
-                    </span>
-                    <span title="Deletar">
-                      <IconChoice icon="delete" />
-                    </span>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      </header>
+
+      {/* BOTÕES DE FILTRO */}
+      <div className={styles.filters}>
+        <div className={styles.filterGroup}>
+          <button
+            className={styles.filterButton} 
+            onClick={() => filterByStatus("Todos")}
+          >
+            Todos
+          </button>
+
+          <button
+            className={styles.filterButton}
+            onClick={() =>
+              filterByStatus("Concluído/Encerrado")
+            }
+          >
+            Concluído
+          </button>
+
+          <button className={styles.filterButton}>
+            Favoritos
+          </button>
+
+          <button 
+            className={styles.filterButton}
+            onClick={() => sortByDate("recentes")}>
+            Data de criação
+          </button>
         </div>
       </div>
-    </div>
+
+      {/* TABELA */}
+      <div className={styles.table}>
+        <table>
+          <thead>
+            <tr>
+              <th>NOME</th>
+              <th>HORA AGENDADA</th>
+              <th>DATA DA CRIAÇÃO</th>
+              <th>STATUS</th>
+              <th>HISTÓRIAS DE USUARIO</th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {filteredBrainstormings.map((b) => {
+              console.log(b);
+
+              const canEditStatus =
+                user?.role?.toLowerCase() === "moderador" ||
+                b.creatorId === user.id;
+              
+              return(
+                <tr key={b.id}>
+                  <td>{b.brainstormingTitle}</td>
+                  <td>{b.brainstormingTime}</td>
+                  <td>{getCurrentDateFormatted(b.createdAt)}</td>
+                  <td>
+                      <div
+                          className={`${styles.table__status} ${
+                          b.status === "Novo"
+                            ? styles.statusNovo
+                            : b.status === "Bloqueado"
+                            ? styles.statusBloqueado
+                            : styles.statusConcluido
+                        }`}
+                      >
+                        <span>{b.status}</span>
+                      </div>
+                  </td>
+                  <td>{b.userStories?.length || 0}</td>
+                  <td>
+                    <div className={styles.table__buttons}>
+                      <span title="Visualizar"
+                          onClick={() => navigate(`/brainstorming/${b.id}`)}
+                      >
+                      <IconChoice icon="eyeOn" />
+                      </span>
+
+                      <span title="Favoritar">
+                        <IconChoice icon="star" />
+                      </span>
+
+                      {canEditStatus && (        
+                        <span 
+                          title="Editar Status"
+                          onClick={(e) =>{
+                            e.stopPropagation();
+                            handleEditStatus(b)
+                          }}
+                        >
+                         <IconChoice icon="edit" />
+                        </span>
+                      )}
+                      <span title="Deletar">
+                        <IconChoice icon="delete" />
+                      </span>
+
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* MODAL */}
+      <Modal.Root 
+        isOpen={isModalOpen}
+        setIsOpen={setIsModalOpen}
+      >
+        <div className={styles.modalIcon}>
+          <AlertTriangle size={52} />
+        </div>
+        <Modal.Text
+          title={currentMessage.title}
+          description={currentMessage.description}
+        />
+        <div className={styles.modalContent}>
+          <label>Status do brainstorming</label>
+          <select
+            className={styles.statusSelect}
+            value={newStatus}
+            onChange={(e) => setNewStatus(e.target.value)}
+          >
+            <option value="Novo">Novo</option>
+            <option value="Ativo">Ativo</option>
+            <option value="Bloqueado">Bloqueado</option>
+            <option value="Concluído/Encerrado">
+              Concluído/Encerrado
+            </option>
+          </select>
+        </div>
+        <div className={styles.warningBox}>
+          <p>
+            <strong>Importante</strong>{" "}
+            {currentMessage.warning}
+          </p>
+        </div>
+        <Modal.Button
+          secondaryButton={{
+            label: "Cancelar",
+            onClick: () =>{ 
+              setNewStatus(selectedBrainstorming.status);
+              setIsModalOpen(false);
+            },
+          }}
+          primaryButton={{
+            label: "Confirmar",
+            onClick: updateStatus,
+            
+          }}
+        />
+      </Modal.Root>
+    </Container>
   );
 }

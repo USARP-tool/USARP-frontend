@@ -6,7 +6,9 @@ import ProfileLayout from "../layouts/Profile/ProfileLayout";
 import Home from "../pages/Home";
 import Profile from "../pages/Profile";
 import Privacity from "../pages/Privacity";
+import ViewUserStories from "../pages/ViewUserStories";
 
+import { ViewBrainstorming } from "../pages/ViewBrainstorming";
 import Project from "../pages/Projects";
 import ProjectDetails from "../pages/ProjectDetails";
 
@@ -17,7 +19,6 @@ import CreateBrainstorming from "../pages/CreateBrainstoming";
 // deletar esses dois depois
 import { RegisterBrainstorming } from "../pages/RegisterBrainstorming";
 
-import { ViewBrainstorming } from "../pages/ViewBrainstorming";
 import { BrainstormingChecklist } from "../pages/BrainstormingChecklist";
 import { OrdemUserstory } from "../pages/OrdemUserstory";
 
@@ -36,8 +37,11 @@ export function LoggedRoutes() {
         <Route path="brainstorming" element={<ViewBrainstorming />} />
         <Route path="brainstormingChecklist" element={<BrainstormingChecklist />} />
 
+        <Route path="registerUserstory" element={<CreateUserStory />} />
+        <Route path="registerUserstory/:projectId" element={<CreateUserStory />} />
+        <Route path="userstories/:projectId" element={<ViewUserStories />} />
         {/* mudar depois o brainstorming */}
-        <Route path="registerBrainstorming" element={<CreateBrainstorming />} />
+        <Route path="registerBrainstorming" element={<RegisterBrainstorming />} />
         <Route path="registerBrainstormingold" element={<RegisterBrainstorming />} />
 
         <Route path="registerUserstory/:projectId" element={<CreateUserStory />} />

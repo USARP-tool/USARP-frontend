@@ -32,19 +32,24 @@
   svg {
     width: 24px;
     height: 24px;
-    stroke: #424242;
   }
 }
 
 .headerActions {
-  width: 350px; 
-  
-   display: flex;
-  width: 50%;  
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .headerActions > div:first-child {
-  width: 100%;
+  width: 300px;
+  flex-shrink: 0;
+}
+
+.headerActions button {
+  white-space: nowrap;
+  height: 48px;
+  flex-shrink: 0;
 }
 
 .filters {
@@ -65,11 +70,9 @@
   border-radius: 999px;
   border: 1px solid #d9d9d9;
   background: white;
-
   font-size: 12px;
   font-weight: 500;
   color: #4f4f4f;
-
   cursor: pointer;
   transition: 0.2s ease;
 
@@ -103,7 +106,6 @@ thead {
   th {
     text-align: left;
     padding: 18px 20px;
-
     font-size: 11px;
     font-weight: 600;
     color: #8c8c8c;
@@ -121,15 +123,19 @@ tbody {
 
     td {
       padding: 18px 20px;
-
       font-size: 13px;
       color: #2f2f2f;
     }
   }
 }
 
-.table__status {
+.clickableRow {
+  cursor: pointer;
+}
+
+.status {
   width: fit-content;
+  background: #fdf0c9;
   padding: 5px 12px;
   border-radius: 999px;
 
@@ -138,32 +144,9 @@ tbody {
   justify-content: center;
 
   span {
+    color: #856404;
     font-size: 11px;
     font-weight: 600;
-  }
-}
-
-.statusNovo {
-  background: #dbeafe;
-
-  span {
-    color: #1d4ed8;
-  }
-}
-
-.statusBloqueado {
-  background: #fee2e2;
-
-  span {
-    color: #dc2626;
-  }
-}
-
-.statusConcluido {
-  background: #dcfce7;
-
-  span {
-    color: #166534;
   }
 }
 
@@ -177,7 +160,6 @@ tbody {
     display: flex;
     align-items: center;
     justify-content: center;
-
     cursor: pointer;
     transition: 0.2s ease;
 
@@ -201,10 +183,8 @@ tbody {
   position: fixed;
   top: 0;
   left: 0;
-
   width: 100%;
   height: 100%;
-
   background: rgba(0, 0, 0, 0.5);
 
   display: flex;
@@ -216,12 +196,11 @@ tbody {
 
 .modal {
   background: white;
-
   width: 450px;
   max-width: 90%;
-
   border-radius: 16px;
   padding: 24px;
+   padding: 24px;
 
   max-height: 80vh;
   overflow-y: auto;
@@ -233,12 +212,10 @@ tbody {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   margin-bottom: 24px;
 
   h3 {
     margin: 0;
-
     font-size: 22px;
     font-weight: 700;
     color: #1f2937;
@@ -247,16 +224,12 @@ tbody {
   button {
     border: none;
     background: transparent;
-
     font-size: 18px;
     font-weight: 700;
-
     cursor: pointer;
     color: #1f2937;
-
     transition: 0.2s ease;
-
-    &:hover {
+    &:hover{
       opacity: 0.7;
     }
   }
@@ -279,6 +252,59 @@ tbody {
   }
 }
 
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  color: #757575;
+  font-size: 14px;
+}
+
+.paginationLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  select {
+    border: none;
+    background: transparent;
+    color: #757575;
+    cursor: pointer;
+    outline: none;
+  }
+}
+
+.paginationNumbers {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  span,
+  button {
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+
+    color: #757575;
+  }
+}
+
+.activePage {
+  background: #d9f3f1 !important;
+  color: #008b8b !important;
+  font-weight: 600;
+}
+
 @media (max-width: 768px) {
   .header {
     flex-direction: column;
@@ -293,7 +319,7 @@ tbody {
   }
 
   .headerActions > div:first-child {
-    width: 100%;
+    width: 300px;
   }
 
   .filters {
@@ -302,158 +328,5 @@ tbody {
 
   .filterGroup {
     min-width: max-content;
-  }
-}
-.statusSelect {
-  width: 100%;
-  margin-top: 1rem;
-  margin-bottom: 1.5rem;
-
-  padding: 0.9rem 1rem;
-
-  border: 1px solid #d9d9d9;
-  border-radius: 10px;
-
-  font-size: 14px;
-  color: #424242;
-
-  outline: none;
-  background: white;
-
-  transition: 0.2s ease;
-
-  &:focus {
-    border-color: #0f8b8d;
-  }
-}
-.modalContent {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-  margin-top: 1rem;
-
-  label {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #424242;
-  }
-}
-
-.statusSelect {
-  width: 100%;
-  padding: 0.9rem 1rem;
-  border-radius: 0.7rem;
-  border: 1px solid #d9d9d9;
-  outline: none;
-
-  font-size: 0.95rem;
-  color: #424242;
-
-  transition: 0.2s;
-
-  &:focus {
-    border-color: #0f8b8d;
-  }
-}.modalIcon {
-  width: 110px;
-  height: 110px;
-
-  border-radius: 50%;
-
-  border: 4px solid #f4b000;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  margin: 0 auto 2rem auto;
-
-  svg {
-    color: #f4b000;
-    stroke-width: 2.5;
-  }
-} 
-.warningBox {
-  margin-top: 1rem;
-
-  background: #fff8db;
-  border: 1px solid #f6e7a1;
-
-  border-radius: 12px;
-
-  padding: 0.85rem 1rem;
-
-  p {
-    margin: 0;
-
-    font-size: 0.82rem;
-    line-height: 1.4;
-
-    color: #7c6a00;
-  }
-
-  strong {
-    font-size: 0.8rem;
-    font-weight: 700;
-
-    color: #5f5200;
-  }
-}.modalNovo {
-  .modalIcon {
-    background: #dbeafe;
-
-    svg {
-      color: #2563eb;
-    }
-  }
-
-  .warningBox {
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-
-    p,
-    strong {
-      color: #1e40af;
-    }
-  }
-}
-
-.modalBloqueado {
-  .modalIcon {
-    background: #fee2e2;
-
-    svg {
-      color: #dc2626;
-    }
-  }
-
-  .warningBox {
-    background: #fef2f2;
-    border: 1px solid #fecaca;
-
-    p,
-    strong {
-      color: #991b1b;
-    }
-  }
-}
-
-.modalConcluido {
-  .modalIcon {
-    background: #dcfce7;
-
-    svg {
-      color: #16a34a;
-    }
-  }
-
-  .warningBox {
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
-
-    p,
-    strong {
-      color: #166534;
-    }
   }
 }
