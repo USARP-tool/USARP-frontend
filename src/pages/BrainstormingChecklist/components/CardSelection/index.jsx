@@ -56,7 +56,11 @@ export function CardSelection({ checkedItems, accordionItems, onBackToChecklist,
         ))}
       </div>
 
-      <Button.Root data-type="primary" className={styles.submit__checklist} onClick={handleBack}>
+      <Button.Root
+        data-type="primary"
+        className={`${styles.submit__checklist} ${styles.backToChecklistButton}`}
+        onClick={handleBack}
+      >
         <Button.Text>Voltar para Checklist</Button.Text>
       </Button.Root>
     </div>

@@ -6,7 +6,6 @@
   cursor: pointer;
   gap: 0.5rem;
 
-
   input {
     cursor: pointer;
     position: absolute;
@@ -28,7 +27,6 @@
 
     transition: all 0.3s ease;
 
-
     &.checked {
       border: none;
       background-color: var(--primary-600);
@@ -38,9 +36,8 @@
       font-weight: 900;
       padding-top: 0.05rem;
       padding-right: 0.05rem;
-      transform: scale(1.1);
+      transform: scale(0.85);
     }
-
   }
 
   .checkbox__text {

@@ -6,9 +6,11 @@ export function CheckboxRoot({ children, checked, ...props }) {
     <label className={styles.checkbox__container}>
       <input type="checkbox" {...props} />
       <div className={styles.checkmark + ` ${checked ? styles.checked : ""}`}>
-        <span className={styles.checkmark__icon}>
-          <Check />
-        </span>
+        {checked && (
+          <span className={styles.checkmark__icon}>
+            <Check />
+          </span>
+        )}
       </div>
       {children}
     </label>

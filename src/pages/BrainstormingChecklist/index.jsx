@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { ChecklistHeader } from "./components/ChecklistHeader";
 import styles from "./styles.module.scss";
 import Checklist from "./components/Checklist";
@@ -6,8 +7,38 @@ import CardsContainer from "./components/CardsContainer";
 import { UserStorySlider } from "./components/UserStorySlider";
 import { CardSelection } from "./components/CardSelection";
 import { SubCardsContainer } from "./components/SubCardsContainer";
+import { api } from "../../utils/api";
+import { useAuth } from "../../hooks/useAuth";
 
 export function BrainstormingChecklist() {
+  const { id: brainstormingId } = useParams();
+  const { token } = useAuth();
+  const [brainstorming, setBrainstorming] = useState(null);
+  const [userStories, setUserStories] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchBrainstormingData() {
+      try {
+        const { data } = await api.get(`/brainstorming/${brainstormingId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setBrainstorming(data);
+        setUserStories(data.userStories || []);
+      } catch (error) {
+        console.error("Error fetching brainstorming data:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (token && brainstormingId) {
+      fetchBrainstormingData();
+    }
+  }, [token, brainstormingId]);
+
   const avatarMock = [
     {
       id: 1,
@@ -120,13 +151,6 @@ export function BrainstormingChecklist() {
                 description: "Registrar as opções do usuário no uso da interface do sistema.",
                 context:
                   "Quando a interface do aplicativo é complexa e possui muitos ícones que podem ser organizados de maneiras diferentes.",
-              },
-              {
-                id: "M4",
-                category: "Feedback sobre progresso",
-                description:
-                  "Informar os usuários quando o sistema estiver processando uma ação que poderá levar algum tempo para completar.",
-                context: "Quando um processo demorado interrompe a interface do usuário por mais de dois segundos.",
               },
             ],
           },
@@ -266,8 +290,12 @@ export function BrainstormingChecklist() {
   };
   return (
     <div className={styles.brainstormingChecklist__container}>
-      <ChecklistHeader avatarList={avatarList} handleSignOutSession={handleSignOutSession} />
-      <UserStorySlider userStory={{ title: "US001 - Cadastro de usuário no sistema" }} />
+      <ChecklistHeader
+        avatarList={avatarList}
+        handleSignOutSession={handleSignOutSession}
+        brainstormingTitle={brainstorming?.brainstormingTitle || "Brainstorming"}
+      />
+      <UserStorySlider userStories={userStories} />
       <main className={styles.content}>
         {isFillingCards ? (
           <>
