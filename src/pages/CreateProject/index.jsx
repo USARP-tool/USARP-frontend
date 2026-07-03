@@ -230,7 +230,7 @@ const watchedProjectTeam = watch("projectTeam");
   return (
     <Container>
       <div>
-        <NavLink to="/projects" className={styles.header}>
+        <NavLink to="/project" className={styles.header}>
           <MoveLeft />
           <h2>{isEditMode ? "Editar Projeto" : "Novo Projeto"}</h2>
         </NavLink>
