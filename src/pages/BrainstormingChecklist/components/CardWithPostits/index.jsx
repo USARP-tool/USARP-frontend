@@ -1,23 +1,8 @@
-import { useState } from "react";
 import Card from "../Card";
 import { PostIt } from "../PostIt";
 import styles from "./styles.module.scss";
 
-export function CardWithPostits({ subcard }) {
-  const [postits, setPostits] = useState([]);
-
-  const handleAddPostit = () => {
-    setPostits([...postits, { id: Date.now(), text: "" }]);
-  };
-
-  const handleUpdatePostit = (id, newText) => {
-    setPostits(postits.map((postit) => (postit.id === id ? { ...postit, text: newText } : postit)));
-  };
-
-  const handleDeletePostit = (id) => {
-    setPostits(postits.filter((postit) => postit.id !== id));
-  };
-
+export function CardWithPostits({ subcard, postits = [], onAddPostit, onUpdatePostit, onDeletePostit }) {
   return (
     <div className={styles.card__with__postits}>
       <Card
@@ -40,12 +25,16 @@ export function CardWithPostits({ subcard }) {
               key={postit.id}
               text={postit.text}
               color={subcard.type}
-              onUpdate={(newText) => handleUpdatePostit(postit.id, newText)}
-              onDelete={() => handleDeletePostit(postit.id)}
+              onUpdate={(newText) => onUpdatePostit && onUpdatePostit(postit.id, newText)}
+              onDelete={() => onDeletePostit && onDeletePostit(postit.id)}
             />
           ))}
         </div>
-        <button className={styles.add__postit__btn} onClick={handleAddPostit} title="Adicionar post-it">
+        <button
+          className={styles.add__postit__btn}
+          onClick={() => onAddPostit && onAddPostit()}
+          title="Adicionar post-it"
+        >
           +
         </button>
       </div>

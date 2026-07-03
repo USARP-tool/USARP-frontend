@@ -1,22 +1,20 @@
-import { useState } from "react";
+import PropTypes from "prop-types";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import styles from "./styles.module.scss";
 
-export function UserStorySlider({ userStories = [], brainstormingName = "Brainstorming" }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
+export function UserStorySlider({ userStories = [], currentIndex = 0, onChangeIndex }) {
   const currentUserStory = userStories[currentIndex];
   const hasMultipleStories = userStories.length > 1;
 
   const handlePrevious = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex((prev) => prev - 1);
+    if (currentIndex > 0 && onChangeIndex) {
+      onChangeIndex(currentIndex - 1);
     }
   };
 
   const handleNext = () => {
-    if (currentIndex < userStories.length - 1) {
-      setCurrentIndex((prev) => prev + 1);
+    if (currentIndex < userStories.length - 1 && onChangeIndex) {
+      onChangeIndex(currentIndex + 1);
     }
   };
 
@@ -53,3 +51,9 @@ export function UserStorySlider({ userStories = [], brainstormingName = "Brainst
     </div>
   );
 }
+
+UserStorySlider.propTypes = {
+  userStories: PropTypes.array,
+  currentIndex: PropTypes.number,
+  onChangeIndex: PropTypes.func,
+};

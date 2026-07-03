@@ -1,7 +1,7 @@
 import { CardWithPostits } from "../CardWithPostits";
 import styles from "./styles.module.scss";
 
-export function SubCardsContainer({ selectedCardId }) {
+export function SubCardsContainer({ selectedCardId, notesByCard = {}, onAddPostit, onUpdatePostit, onDeletePostit }) {
   const getSubcards = () => {
     if (!selectedCardId) return [];
 
@@ -336,14 +336,28 @@ export function SubCardsContainer({ selectedCardId }) {
       {requisitoCards.length > 0 && (
         <div className={styles.column}>
           {requisitoCards.map((subcard) => (
-            <CardWithPostits key={subcard.id} subcard={subcard} />
+            <CardWithPostits
+              key={subcard.id}
+              subcard={subcard}
+              postits={notesByCard[subcard.id] || []}
+              onAddPostit={() => onAddPostit && onAddPostit(subcard.id)}
+              onUpdatePostit={(noteId, newText) => onUpdatePostit && onUpdatePostit(subcard.id, noteId, newText)}
+              onDeletePostit={(noteId) => onDeletePostit && onDeletePostit(subcard.id, noteId)}
+            />
           ))}
         </div>
       )}
       {prototipacaoCards.length > 0 && (
         <div className={styles.column}>
           {prototipacaoCards.map((subcard) => (
-            <CardWithPostits key={subcard.id} subcard={subcard} />
+            <CardWithPostits
+              key={subcard.id}
+              subcard={subcard}
+              postits={notesByCard[subcard.id] || []}
+              onAddPostit={() => onAddPostit && onAddPostit(subcard.id)}
+              onUpdatePostit={(noteId, newText) => onUpdatePostit && onUpdatePostit(subcard.id, noteId, newText)}
+              onDeletePostit={(noteId) => onDeletePostit && onDeletePostit(subcard.id, noteId)}
+            />
           ))}
         </div>
       )}
